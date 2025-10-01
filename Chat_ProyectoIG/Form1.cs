@@ -243,7 +243,7 @@ namespace Chat_ProyectoIG
             textoMensaje.SelectionStart = texto.Length;
 
         }
-    }
+
 
         private void boton_agregar_Click(object sender, EventArgs e)
         {
@@ -255,3 +255,4 @@ namespace Chat_ProyectoIG
 
         }
     }
+}
