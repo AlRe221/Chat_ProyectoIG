@@ -97,5 +97,12 @@ namespace Chat_ProyectoIG
         {
             throw new NotImplementedException();
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form2 formRegistro = new Form2();
+            formRegistro.Show();
+            this.Hide();
+        }
     }
 }
