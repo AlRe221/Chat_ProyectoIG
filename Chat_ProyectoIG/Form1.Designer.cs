@@ -99,6 +99,10 @@
         private System.Windows.Forms.Button enviar;
         private System.Windows.Forms.RichTextBox cajadetexto;
         private System.Windows.Forms.RichTextBox textoMensaje;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button boton_agregar;
+        private System.Windows.Forms.Button Crear_Grupo;
     }
 }
 

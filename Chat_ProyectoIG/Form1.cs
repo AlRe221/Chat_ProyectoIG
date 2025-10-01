@@ -244,4 +244,14 @@ namespace Chat_ProyectoIG
 
         }
     }
-}
+
+        private void boton_agregar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Crear_Grupo_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
