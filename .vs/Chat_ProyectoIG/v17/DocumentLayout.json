@@ -1,18 +1,38 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\",
+  "WorkspaceRootPath": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|c:\\users\\rilex\\onedrive\\escritorio\\chat_proyectoig\\chat_proyectoig\\chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|c:\\users\\jacor\\onedrive\\documentos\\interfaces graficas\\proyectchat\\chat_proyectoig\\chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\form2.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form2.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,53 +42,101 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form2.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.Designer.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form2.Designer.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.Designer.cs",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form2.Designer.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAnwJEAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-01T02:00:07.4Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Form1.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
-              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
-              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
+              "Title": "Form3.cs",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form3.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form3.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form3.cs",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form3.cs",
+              "ViewState": "AgIAAFkAAAAAAAAAAAAIwFkAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T21:12:20.871Z",
-              "EditorCaption": " [Dise\u00F1o]"
+              "WhenOpened": "2025-10-01T01:40:58.318Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
-              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
-              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
-              "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAqwPIAAAA3AAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "Form3.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form3.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form3.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form3.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form3.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-28T19:36:00.773Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-01T01:40:30.105Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Program.cs",
-              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Program.cs",
-              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\Chat_ProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Program.cs",
-              "RelativeToolTip": "Chat_ProyectoIG\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "Form2.cs",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form2.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.cs",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form2.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAswBsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-28T19:35:45.018Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-01T01:33:04.793Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Form2.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form2.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form2.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-01T01:31:31.538Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Form1.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-27T21:12:20.871Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPIAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-28T19:36:00.773Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Program.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Program.cs",
+              "ToolTip": "C:\\Users\\jacor\\OneDrive\\Documentos\\Interfaces Graficas\\ProyectChat\\Chat_ProyectoIG\\Chat_ProyectoIG\\Program.cs",
+              "RelativeToolTip": "Chat_ProyectoIG\\Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-28T19:35:45.018Z"
             }
           ]
         }
