@@ -173,13 +173,14 @@
             // 
             // Form1
             // 
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(49)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(101)))), ((int)(((byte)(242)))));
             this.ClientSize = new System.Drawing.Size(900, 600);
             this.Controls.Add(this.chatPanel);
             this.Controls.Add(this.sidebar);
             this.Controls.Add(this.memberList);
             this.Controls.Add(this.boton_agregar);
             this.Controls.Add(this.Crear_Grupo);
+            this.Font = new System.Drawing.Font("Modern No. 20", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "Form1";
             this.Text = "Discord Style Chat";
