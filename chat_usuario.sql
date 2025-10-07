@@ -1,53 +1,38 @@
--- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
---
--- Host: localhost    Database: chat
--- ------------------------------------------------------
--- Server version	8.0.42
+-- 🧨 Eliminar base de datos si ya existe (¡CUIDADO! Borra todo)
+DROP DATABASE IF EXISTS chat;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- 🛠 Crear base de datos con soporte para acentos y emojis
+CREATE DATABASE chat CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE chat;
 
---
--- Table structure for table `usuario`
---
+-- 🧹 Eliminar tabla si existe
+DROP TABLE IF EXISTS usuario;
 
-DROP TABLE IF EXISTS `usuario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usuario` (
-  `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(45) NOT NULL,
-  `password` varchar(80) NOT NULL,
-  `usuario` varchar(50) NOT NULL,
-  PRIMARY KEY (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- 📦 Crear tabla de usuarios
+CREATE TABLE usuario (
+  id_usuario INT NOT NULL AUTO_INCREMENT,
+  nombre VARCHAR(45) NOT NULL,
+  password VARCHAR(80) NOT NULL,
+  usuario VARCHAR(50) NOT NULL,
+  PRIMARY KEY (id_usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `usuario`
---
+-- 👥 Insertar usuarios de prueba
+INSERT INTO usuario (nombre, password, usuario) VALUES
+('Carlos','Pqnoe+r6BKGnkd5eSDbEK4ZcUr4X2uzh/FoSvXtf1p7ltXME','Hola57'),
+('Juan','MfumQ8mj7wEsa0681QvDPwWelEdeOeTlBHlG3DDzhxuSz+1W','Carlos57'),
+('Maria','zb3gPP/mx1gHN0yvDL1IgOm0i+9QIcWnlav425jZOPl70fj/','Mari75'),
+('Carlos','0Ex0Mq09VTgZRyDzzoj+MYaGie9wFRf5lu/GZvOrzVzY09jj','Carlos78'),
+('Juan','iMsIOr2pFXS2hXHocx8uB9linetbknhZZrnMTgrs9GXu1IkG','Juan78'),
+('Maria','ShQr0soMNR8mKKl1JzQitF7ZByW5haYex2/Tma5mlL3+O8Kv','Mari78'),
+('Maria','7Z1cdmiV4Gl3z6wLSwsNvky5ByxBOoFjY7DoRfdTy/NQ0WaW','Maria79');
 
-LOCK TABLES `usuario` WRITE;
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Carlos','Pqnoe+r6BKGnkd5eSDbEK4ZcUr4X2uzh/FoSvXtf1p7ltXME','Hola57'),(2,'Juan','MfumQ8mj7wEsa0681QvDPwWelEdeOeTlBHlG3DDzhxuSz+1W','Carlos57'),(3,'Maria','zb3gPP/mx1gHN0yvDL1IgOm0i+9QIcWnlav425jZOPl70fj/','Mari75'),(4,'Carlos','0Ex0Mq09VTgZRyDzzoj+MYaGie9wFRf5lu/GZvOrzVzY09jj','Carlos78'),(5,'Juan','iMsIOr2pFXS2hXHocx8uB9linetbknhZZrnMTgrs9GXu1IkG','Juan78'),(6,'Maria','ShQr0soMNR8mKKl1JzQitF7ZByW5haYex2/Tma5mlL3+O8Kv','Mari78'),(7,'Maria','7Z1cdmiV4Gl3z6wLSwsNvky5ByxBOoFjY7DoRfdTy/NQ0WaW','Maria79');
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+-- 🔐 Eliminar usuario si ya existe
+DROP USER IF EXISTS 'chatuser'@'localhost';
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+-- 🧑‍💻 Crear usuario de conexión con método compatible
+CREATE USER 'chatuser'@'localhost' IDENTIFIED WITH mysql_native_password BY 'S3bas!2025_DBchat';
 
--- Dump completed on 2025-09-30 20:08:32
+-- 🛡 Otorgar permisos necesarios
+GRANT SELECT, INSERT, UPDATE, DELETE ON chat.* TO 'chatuser'@'localhost';
+FLUSH PRIVILEGES;
