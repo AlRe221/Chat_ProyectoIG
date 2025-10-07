@@ -18,6 +18,7 @@ namespace Chat_ProyectoIG
         public Form2()
         {
             InitializeComponent();
+            
         }
 
         public int validarContrasena()
@@ -132,6 +133,7 @@ namespace Chat_ProyectoIG
                 }
 
                 using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=chatuser;pwd=S3bas!2025_DBchat;database=chat"))
+         
                 {
                     conn.Open();
 
@@ -193,6 +195,41 @@ namespace Chat_ProyectoIG
         private void Nombre_TextChanged(object sender, EventArgs e)
         {
             nombre = Nombre.Text;
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

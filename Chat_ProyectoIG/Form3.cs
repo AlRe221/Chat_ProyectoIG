@@ -23,7 +23,11 @@ namespace Chat_ProyectoIG
         {
             try
             {
+
                 using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=S3bas!2025_DBchat;database=chat"))
+
+               
+
                 {
                     conn.Open();
 
@@ -103,6 +107,36 @@ namespace Chat_ProyectoIG
             Form2 formRegistro = new Form2();
             formRegistro.Show();
             this.Hide();
+        }
+
+        private void Form3_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
