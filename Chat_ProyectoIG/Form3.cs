@@ -24,7 +24,7 @@ namespace Chat_ProyectoIG
             try
             {
 
-                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=S3bas!2025_DBchat;database=chat"))
+                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=chatuser;pwd=S3bas!2025_DBchat;database=chat"))
 
                
 

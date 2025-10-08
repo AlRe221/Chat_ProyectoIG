@@ -60,8 +60,8 @@ namespace Chat_ProyectoIG
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.DARK;
             materialSkinManager.ColorScheme = new ColorScheme(
-                Primary.Grey900, Primary.Grey800,
-                Primary.Grey500, Accent.LightBlue200,
+                Primary.Indigo500, Primary.Indigo700,
+                Primary.Indigo100, Accent.LightBlue200,
                 TextShade.WHITE
 
             );
@@ -83,11 +83,11 @@ namespace Chat_ProyectoIG
             botonMensajePrivado.ForeColor = Color.White;
             botonMensajePrivado.FlatStyle = FlatStyle.Flat;
             botonMensajePrivado.FlatAppearance.BorderColor = Color.LightBlue;
-            botonMensajePrivado.Location = new Point(1, 170);
+            botonMensajePrivado.Location = new Point(20, 200);
 
             botonMensajePrivado.Click += MensajePrivado_Click;
 
-            this.Controls.Add(botonMensajePrivado);
+            panel1.Controls.Add(botonMensajePrivado);
 
             InicializarMenuReaccion();
 
@@ -99,11 +99,12 @@ namespace Chat_ProyectoIG
             botonEnviarGrupo.ForeColor = Color.White;
             botonEnviarGrupo.FlatStyle = FlatStyle.Flat;
             botonEnviarGrupo.FlatAppearance.BorderColor = Color.LightBlue;
-            botonEnviarGrupo.Location = new Point(1, 220); // Ajusta según tu layout
-
+            botonEnviarGrupo.Location = new Point(20, 240); // Ajusta según tu layout
+      
             botonEnviarGrupo.Click += EnviarMensajeAGrupo_Click;
 
-            this.Controls.Add(botonEnviarGrupo);
+            panel1.Controls.Add(botonEnviarGrupo);
+
 
             animacionPanel.Interval = 30;
             animacionPanel.Tick += AnimarPaneles;
@@ -112,9 +113,9 @@ namespace Chat_ProyectoIG
             botonModo.Font = new Font("Segoe UI", 9);
             botonModo.Text = "Modo Compacto";
             botonModo.Size = new Size(100, 35);
-            botonModo.Location = new Point(1, 320);
+            botonModo.Location = new Point(20, 320);
             botonModo.Click += AlternarModo_Click;
-            this.Controls.Add(botonModo);
+            panel1.Controls.Add(botonModo);
 
 
         }
@@ -790,9 +791,15 @@ namespace Chat_ProyectoIG
             botonModo.Text = modoCompacto ? "Modo Expandido" : "Modo Compacto";
         }
 
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
 
+        }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 
 
