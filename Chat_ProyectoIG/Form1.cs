@@ -45,6 +45,11 @@ namespace Chat_ProyectoIG
             {":sandwich:", "🥪"}
 
         }; //diccionario para guardar los emojis y su id 
+
+        Dictionary<string, List<string>> gruposConMiembros = new Dictionary<string, List<string>>();
+        ContextMenuStrip menuReaccion = new ContextMenuStrip();
+        Button botonModo;
+
         public Form1()
         {
             InitializeComponent();
@@ -64,15 +69,69 @@ namespace Chat_ProyectoIG
             // generaEmoji(generarEmoji);
             generaEmoji(generarEmojis);
 
+            memberList.SelectionMode = SelectionMode.MultiExtended;
+            groupList.SelectedIndexChanged += GroupList_SelectedIndexChanged;
+
+            InicializarMenuUsuario();
+            InicializarMenuGrupo();
+
+            Button botonMensajePrivado = new Button();
+            botonMensajePrivado.Text = "Mensaje Privado";
+            botonMensajePrivado.Size = new Size(100, 50);
+            botonMensajePrivado.Font = new Font("Segoe UI", 8);
+            botonMensajePrivado.BackColor = Color.FromArgb(33, 33, 33);
+            botonMensajePrivado.ForeColor = Color.White;
+            botonMensajePrivado.FlatStyle = FlatStyle.Flat;
+            botonMensajePrivado.FlatAppearance.BorderColor = Color.LightBlue;
+            botonMensajePrivado.Location = new Point(1, 170);
+
+            botonMensajePrivado.Click += MensajePrivado_Click;
+
+            this.Controls.Add(botonMensajePrivado);
+
+            InicializarMenuReaccion();
+
+            Button botonEnviarGrupo = new Button();
+            botonEnviarGrupo.Text = "Enviar a Grupo";
+            botonEnviarGrupo.Size = new Size(100, 50);
+            botonEnviarGrupo.Font = new Font("Segoe UI", 9);
+            botonEnviarGrupo.BackColor = Color.FromArgb(33, 33, 33);
+            botonEnviarGrupo.ForeColor = Color.White;
+            botonEnviarGrupo.FlatStyle = FlatStyle.Flat;
+            botonEnviarGrupo.FlatAppearance.BorderColor = Color.LightBlue;
+            botonEnviarGrupo.Location = new Point(1, 220); // Ajusta según tu layout
+
+            botonEnviarGrupo.Click += EnviarMensajeAGrupo_Click;
+
+            this.Controls.Add(botonEnviarGrupo);
+
+            animacionPanel.Interval = 30;
+            animacionPanel.Tick += AnimarPaneles;
+
+            botonModo = new Button();
+            botonModo.Font = new Font("Segoe UI", 9);
+            botonModo.Text = "Modo Compacto";
+            botonModo.Size = new Size(100, 35);
+            botonModo.Location = new Point(1, 320);
+            botonModo.Click += AlternarModo_Click;
+            this.Controls.Add(botonModo);
+
+
         }
+        ContextMenuStrip menuUsuario = new ContextMenuStrip();
+        ContextMenuStrip menuGrupo = new ContextMenuStrip();
+        Timer animacionPanel = new Timer();
+        int pasoOpacidad = 10;
+        bool ocultarPaneles = false;
 
 
         // Send chat message
-        private void SendButton_Click(object sender, EventArgs e)
+        private async void SendButton_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(inputBox.Text))
             {
-                chatBox.Items.Add($"You: {inputBox.Text}");
+                await EnviarMensajeAnimado($"You: {inputBox.Text}");
+
                 inputBox.Clear();
             }
         }
@@ -106,13 +165,89 @@ namespace Chat_ProyectoIG
 
         private void boton_agregar_Click(object sender, EventArgs e)
         {
+            string username = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingresa el nombre del usuario:",
+                "Agregar Usuario",
+                "NuevoUsuario"
+            );
 
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                MessageBox.Show("No se ingresó ningún nombre.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Verificar si ya existe (sin emoji)
+            foreach (string usuario in memberList.Items)
+            {
+                // Extraer nombre sin emoji
+                string nombreSinEmoji = usuario.Contains(" ") ? usuario.Substring(usuario.IndexOf(" ") + 1) : usuario;
+                if (nombreSinEmoji.Equals(username, StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Ese usuario ya existe.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+
+
+
+            string nombreFinal = $"{username}";
+            memberList.Items.Add(nombreFinal);
+            MessageBox.Show($"Usuario '{nombreFinal}' agregado con éxito.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
 
         private void Crear_Grupo_Click(object sender, EventArgs e)
         {
+            string groupName = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingresa el nombre del grupo:",
+                "Crear Grupo",
+                "NuevoGrupo"
+            );
 
+            if (string.IsNullOrWhiteSpace(groupName))
+            {
+                MessageBox.Show("No se ingresó ningún nombre de grupo.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Verificar si ya existe en groupList visualmente
+            foreach (string grupo in groupList.Items)
+            {
+                if (grupo.Equals(groupName, StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Ese grupo ya existe.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+
+            // Verificar si ya existe en la estructura interna
+            if (gruposConMiembros.ContainsKey(groupName))
+            {
+                MessageBox.Show("Ese grupo ya existe internamente.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            if (memberList.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecciona al menos un miembro en la lista para asignarlo al grupo.", "Sin miembros", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            List<string> miembrosSeleccionados = new List<string>();
+            foreach (var item in memberList.SelectedItems)
+            {
+                miembrosSeleccionados.Add(item.ToString());
+            }
+
+            gruposConMiembros[groupName] = miembrosSeleccionados;
+            groupList.Items.Add(groupName);
+
+            MessageBox.Show($"Grupo '{groupName}' creado con {miembrosSeleccionados.Count} miembro(s).", "Grupo creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+
+
 
         private void chatBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -174,6 +309,8 @@ namespace Chat_ProyectoIG
 
             }
             inputBox.SelectionStart = texto.Length;
+            ResaltarMenciones();
+
         }
 
         private void emoji_Click(object sender, EventArgs e)
@@ -303,7 +440,361 @@ namespace Chat_ProyectoIG
             return tabPage;
 
         }
+
+        private void ResaltarMenciones()
+        {
+            int cursorPos = inputBox.SelectionStart;
+            string texto = inputBox.Text;
+
+            // Guardar el texto plano sin formato
+            inputBox.TextChanged -= inputBox_TextChanged; // Evitar bucle de eventos
+            inputBox.Text = texto;
+            inputBox.SelectAll();
+            inputBox.SelectionColor = Color.White;
+            inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Regular);
+            inputBox.DeselectAll();
+
+            foreach (string usuario in memberList.Items)
+            {
+                string patron = "@" + usuario;
+                int index = texto.IndexOf(patron);
+
+                while (index != -1)
+                {
+                    inputBox.Select(index, patron.Length);
+                    inputBox.SelectionColor = Color.LightSkyBlue; // Azul celeste
+                    inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Italic);
+
+                    index = texto.IndexOf(patron, index + patron.Length);
+                }
+            }
+
+            inputBox.SelectionStart = cursorPos;
+            inputBox.SelectionLength = 0;
+            inputBox.TextChanged += inputBox_TextChanged; // Restaurar evento
+        }
+
+        private void memberList_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GroupList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (groupList.SelectedItem == null) return;
+
+            string grupoSeleccionado = groupList.SelectedItem.ToString();
+
+            if (gruposConMiembros.ContainsKey(grupoSeleccionado))
+            {
+                miembrosGrupo.Items.Clear();
+
+                foreach (string miembro in gruposConMiembros[grupoSeleccionado])
+                {
+                    miembrosGrupo.Items.Add(miembro);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Este grupo no tiene miembros asignados.", "Sin miembros", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        public void InicializarMenuUsuario()
+        {
+            menuUsuario.Items.Add("Editar nombre", null, EditarUsuario_Click);
+            menuUsuario.Items.Add("Eliminar usuario", null, EliminarUsuario_Click);
+            menuUsuario.Items.Add("Asignar a grupo", null, AsignarUsuarioAGrupo_Click);
+
+            memberList.ContextMenuStrip = menuUsuario;
+        }
+
+        public void InicializarMenuGrupo()
+        {
+            menuGrupo.Items.Add("Renombrar grupo", null, RenombrarGrupo_Click);
+            menuGrupo.Items.Add("Eliminar grupo", null, EliminarGrupo_Click);
+            menuGrupo.Items.Add("Ver miembros", null, VerMiembrosGrupo_Click);
+
+            groupList.ContextMenuStrip = menuGrupo;
+        }
+
+        private void EditarUsuario_Click(object sender, EventArgs e)
+        {
+            if (memberList.SelectedItem == null) return;
+
+            string actual = memberList.SelectedItem.ToString();
+            string nuevo = Microsoft.VisualBasic.Interaction.InputBox("Nuevo nombre:", "Editar Usuario", actual);
+
+            if (!string.IsNullOrWhiteSpace(nuevo))
+            {
+                // Actualizar en memberList
+                int index = memberList.SelectedIndex;
+                memberList.Items[index] = nuevo;
+
+                // Actualizar en todos los grupos
+                foreach (var grupo in gruposConMiembros.Keys.ToList())
+                {
+                    var miembros = gruposConMiembros[grupo];
+                    if (miembros.Contains(actual))
+                    {
+                        miembros.Remove(actual);
+                        miembros.Add(nuevo);
+                    }
+                }
+
+                MessageBox.Show($"Usuario '{actual}' renombrado a '{nuevo}' y actualizado en todos los grupos.", "Actualización completa");
+            }
+        }
+
+
+        private void EliminarUsuario_Click(object sender, EventArgs e)
+        {
+            if (memberList.SelectedItem == null) return;
+
+            string usuario = memberList.SelectedItem.ToString();
+            var confirm = MessageBox.Show($"¿Eliminar al usuario '{usuario}' de la lista y de todos los grupos?", "Confirmar", MessageBoxButtons.YesNo);
+
+            if (confirm == DialogResult.Yes)
+            {
+                memberList.Items.Remove(usuario);
+
+                // Eliminar de todos los grupos
+                foreach (var grupo in gruposConMiembros.Keys.ToList())
+                {
+                    gruposConMiembros[grupo].Remove(usuario);
+                }
+
+                MessageBox.Show($"Usuario '{usuario}' eliminado de la lista y de todos los grupos.", "Eliminación completa");
+            }
+        }
+
+
+        private void AsignarUsuarioAGrupo_Click(object sender, EventArgs e)
+        {
+            if (memberList.SelectedItem == null || groupList.SelectedItem == null)
+            {
+                MessageBox.Show("Selecciona un grupo en la lista para asignar el usuario.", "Falta selección");
+                return;
+            }
+
+            string usuario = memberList.SelectedItem.ToString();
+            string grupo = groupList.SelectedItem.ToString();
+
+            if (!gruposConMiembros.ContainsKey(grupo))
+                gruposConMiembros[grupo] = new List<string>();
+
+            if (!gruposConMiembros[grupo].Contains(usuario))
+            {
+                gruposConMiembros[grupo].Add(usuario);
+                MessageBox.Show($"Usuario '{usuario}' asignado al grupo '{grupo}'.", "Asignación exitosa");
+            }
+            else
+            {
+                MessageBox.Show("Ese usuario ya está en el grupo.", "Duplicado");
+            }
+        }
+
+        private void RenombrarGrupo_Click(object sender, EventArgs e)
+        {
+            if (groupList.SelectedItem == null) return;
+
+            string actual = groupList.SelectedItem.ToString();
+            string nuevo = Microsoft.VisualBasic.Interaction.InputBox("Nuevo nombre:", "Renombrar Grupo", actual);
+
+            if (!string.IsNullOrWhiteSpace(nuevo))
+            {
+                int index = groupList.SelectedIndex;
+                groupList.Items[index] = nuevo;
+
+                if (gruposConMiembros.ContainsKey(actual))
+                {
+                    var miembros = gruposConMiembros[actual];
+                    gruposConMiembros.Remove(actual);
+                    gruposConMiembros[nuevo] = miembros;
+                }
+            }
+        }
+
+        private void EliminarGrupo_Click(object sender, EventArgs e)
+        {
+            if (groupList.SelectedItem == null) return;
+
+            var confirm = MessageBox.Show("¿Eliminar este grupo?", "Confirmar", MessageBoxButtons.YesNo);
+            if (confirm == DialogResult.Yes)
+            {
+                string grupo = groupList.SelectedItem.ToString();
+                groupList.Items.Remove(grupo);
+                gruposConMiembros.Remove(grupo);
+
+                // Limpia la visualización de miembros
+                miembrosGrupo.Items.Clear();
+            }
+        }
+
+
+        private void VerMiembrosGrupo_Click(object sender, EventArgs e)
+        {
+            if (groupList.SelectedItem == null) return;
+
+            string grupo = groupList.SelectedItem.ToString();
+            if (gruposConMiembros.ContainsKey(grupo))
+            {
+                var miembros = string.Join("\n", gruposConMiembros[grupo]);
+                MessageBox.Show($"Miembros de '{grupo}':\n{miembros}", "Grupo");
+            }
+            else
+            {
+                MessageBox.Show("Este grupo no tiene miembros asignados.", "Grupo vacío");
+            }
+        }
+
+        private async void MensajePrivado_Click(object sender, EventArgs e)
+        {
+            if (memberList.SelectedItem == null)
+            {
+                MessageBox.Show("Selecciona un usuario para enviarle un mensaje privado.", "Sin selección");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(inputBox.Text))
+            {
+                MessageBox.Show("Escribe un mensaje antes de enviarlo.", "Mensaje vacío");
+                return;
+            }
+
+            string destinatario = memberList.SelectedItem.ToString();
+            string mensaje = inputBox.Text;
+
+
+            await EnviarMensajeAnimado($"[Privado a {destinatario}] Tú: {mensaje}");
+
+            inputBox.Clear();
+        }
+
+
+        public void InicializarMenuReaccion()
+        {
+            foreach (var emoji in new[] { "😂", "👍", "❤️", "😮", "😢", "🔥" })
+            {
+                menuReaccion.Items.Add(emoji, null, (s, e) => ReaccionarMensaje_Click(s, e, emoji));
+            }
+
+            chatBox.ContextMenuStrip = menuReaccion;
+
+            chatBox.MouseDown += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    int index = chatBox.IndexFromPoint(e.Location);
+                    if (index != ListBox.NoMatches)
+                    {
+                        chatBox.SelectedIndex = index;
+                        menuReaccion.Show(chatBox, e.Location);
+                    }
+                }
+            };
+        }
+        private void ReaccionarMensaje_Click(object sender, EventArgs e, string emoji)
+        {
+            int index = chatBox.SelectedIndex;
+            if (index != -1)
+            {
+                string reaccion = $"   {emoji}";
+
+                // Verifica si ya hay una reacción debajo
+                if (index + 1 < chatBox.Items.Count && chatBox.Items[index + 1].ToString().Trim() == emoji)
+                {
+                    MessageBox.Show("Ya se ha agregado esta reacción.", "Duplicado");
+                    return;
+                }
+
+                chatBox.Items.Insert(index + 1, reaccion);
+            }
+        }
+
+        private async void EnviarMensajeAGrupo_Click(object sender, EventArgs e)
+        {
+            if (groupList.SelectedItem == null)
+            {
+                MessageBox.Show("Selecciona un grupo para enviar el mensaje.", "Grupo no seleccionado");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(inputBox.Text))
+            {
+                MessageBox.Show("Escribe un mensaje antes de enviarlo.", "Mensaje vacío");
+                return;
+            }
+
+            string grupo = groupList.SelectedItem.ToString();
+            string mensaje = inputBox.Text;
+
+
+            await EnviarMensajeAnimado($"[Grupo: {grupo}] Tú: {mensaje}");
+
+            inputBox.Clear();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private async Task EnviarMensajeAnimado(string mensaje)
+        {
+            chatBox.Items.Add(""); // Espacio para animación
+
+            for (int i = 0; i <= mensaje.Length; i++)
+            {
+                chatBox.Items[chatBox.Items.Count - 1] = mensaje.Substring(0, i);
+                await Task.Delay(25); // Velocidad de animación (ajustable)
+            }
+        }
+
+        private void AnimarPaneles(object sender, EventArgs e)
+        {
+            foreach (Control panel in new[] { groupList, memberList, miembrosGrupo })
+            {
+                if (ocultarPaneles)
+                {
+                    panel.Visible = true;
+                    panel.BackColor = Color.FromArgb(panel.BackColor.R, panel.BackColor.G, panel.BackColor.B, Math.Max(0, panel.BackColor.A - pasoOpacidad));
+                    if (panel.BackColor.A <= 0)
+                    {
+                        panel.Visible = false;
+                        animacionPanel.Stop();
+                    }
+                }
+                else
+                {
+                    panel.Visible = true;
+                    panel.BackColor = Color.FromArgb(panel.BackColor.R, panel.BackColor.G, panel.BackColor.B, Math.Min(255, panel.BackColor.A + pasoOpacidad));
+                    if (panel.BackColor.A >= 255)
+                    {
+                        animacionPanel.Stop();
+                    }
+                }
+            }
+        }
+        bool modoCompacto = false;
+
+        private void AlternarModo_Click(object sender, EventArgs e)
+        {
+            modoCompacto = !modoCompacto;
+
+            groupList.Visible = !modoCompacto;
+            memberList.Visible = !modoCompacto;
+            miembrosGrupo.Visible = !modoCompacto;
+
+            botonModo.Text = modoCompacto ? "Modo Expandido" : "Modo Compacto";
+        }
+
+
+
+
     }
+
+
+
 }
-
-
