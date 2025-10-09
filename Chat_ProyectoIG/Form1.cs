@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
+using MySql.Data.MySqlClient;
 
 namespace Chat_ProyectoIG
 {
+   
+
     public partial class Form1 : MaterialForm
     {
         TabControl generarEmojis = new TabControl();
@@ -19,6 +22,9 @@ namespace Chat_ProyectoIG
         FlowLayoutPanel paraAnimalitos = new FlowLayoutPanel();
         FlowLayoutPanel paraComida = new FlowLayoutPanel();
         FlowLayoutPanel paraVarios = new FlowLayoutPanel();
+
+        //cadena de conexión
+        string connectionString = "";
 
         //preguntar al profe: tengo que poner todos los emojis que puse en mi boton emojis o solo algunos?
 
@@ -100,7 +106,7 @@ namespace Chat_ProyectoIG
             botonEnviarGrupo.FlatStyle = FlatStyle.Flat;
             botonEnviarGrupo.FlatAppearance.BorderColor = Color.LightBlue;
             botonEnviarGrupo.Location = new Point(20, 240); // Ajusta según tu layout
-      
+
             botonEnviarGrupo.Click += EnviarMensajeAGrupo_Click;
 
             panel1.Controls.Add(botonEnviarGrupo);
@@ -668,6 +674,7 @@ namespace Chat_ProyectoIG
 
 
             await EnviarMensajeAnimado($"[Privado a {destinatario}] Tú: {mensaje}");
+            GuardarMensajeEnBD("Tú", destinatario, null, mensaje);
 
             inputBox.Clear();
         }
@@ -732,6 +739,7 @@ namespace Chat_ProyectoIG
 
 
             await EnviarMensajeAnimado($"[Grupo: {grupo}] Tú: {mensaje}");
+            GuardarMensajeEnBD("Tú", null, grupo, mensaje);
 
             inputBox.Clear();
         }
@@ -800,8 +808,69 @@ namespace Chat_ProyectoIG
         {
 
         }
+
+        //método para guardar mensaje
+        private void GuardarMensajeEnBD(string remitente, string destinatario, string grupo, string mensaje)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = "INSERT INTO mensajes (remitente, destinatario, grupo, mensaje) VALUES (@remitente, @destinatario, @grupo, @mensaje)";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@remitente", remitente);
+                    cmd.Parameters.AddWithValue("@destinatario", string.IsNullOrEmpty(destinatario) ? DBNull.Value : (object)destinatario);
+                    cmd.Parameters.AddWithValue("@grupo", string.IsNullOrEmpty(grupo) ? DBNull.Value : (object)grupo);
+                    cmd.Parameters.AddWithValue("@mensaje", mensaje);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar mensaje: " + ex.Message);
+            }
+        }
+
+        //para cargar msjs anteriores
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            CargarMensajes();
+        }
+
+        private void CargarMensajes()
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT remitente, destinatario, grupo, mensaje, fecha FROM mensajes ORDER BY fecha ASC";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    MySqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        string remitente = reader["remitente"].ToString();
+                        string destinatario = reader["destinatario"] == DBNull.Value ? null : reader["destinatario"].ToString();
+                        string grupo = reader["grupo"] == DBNull.Value ? null : reader["grupo"].ToString();
+                        string mensaje = reader["mensaje"].ToString();
+
+                        if (!string.IsNullOrEmpty(grupo))
+                            chatBox.Items.Add($"[{grupo}] {remitente}: {mensaje}");
+                        else if (!string.IsNullOrEmpty(destinatario))
+                            chatBox.Items.Add($"[Privado a {destinatario}] {remitente}: {mensaje}");
+                        else
+                            chatBox.Items.Add($"{remitente}: {mensaje}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar mensajes: " + ex.Message);
+            }
+        }
+        }
     }
-
-
-
-}
