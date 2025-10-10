@@ -299,7 +299,6 @@
             this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "Form1";
             this.Text = "Discord Style Chat";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.chatPanel.ResumeLayout(false);
             this.bottomPanel.ResumeLayout(false);
             this.bottomPanel.PerformLayout();

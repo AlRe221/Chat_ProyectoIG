@@ -24,7 +24,9 @@ namespace Chat_ProyectoIG
         FlowLayoutPanel paraVarios = new FlowLayoutPanel();
 
         //cadena de conexión
-        string connectionString = "";
+        string connectionString = "server=127.0.0.1;uid=root;pwd=57057goku75@jua57;database=chat";
+        public string UsuarioActual { get; set; }
+        public int UsuarioActualId { get; set; }
 
         //preguntar al profe: tengo que poner todos los emojis que puse en mi boton emojis o solo algunos?
 
@@ -56,10 +58,11 @@ namespace Chat_ProyectoIG
         ContextMenuStrip menuReaccion = new ContextMenuStrip();
         Button botonModo;
 
-        public Form1()
+        public Form1(string usuario, int usuarioId)
         {
             InitializeComponent();
-
+            UsuarioActual = usuario;
+            UsuarioActualId = usuarioId;
 
             // Configuración de MaterialSkin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -123,6 +126,9 @@ namespace Chat_ProyectoIG
             botonModo.Click += AlternarModo_Click;
             panel1.Controls.Add(botonModo);
 
+            CargarUsuariosDesdeBD(); // Nuevo método
+            CargarGruposDesdeBD();   // Nuevo método
+            CargarMensajes();        // Método mejorado
 
         }
         ContextMenuStrip menuUsuario = new ContextMenuStrip();
@@ -137,8 +143,9 @@ namespace Chat_ProyectoIG
         {
             if (!string.IsNullOrWhiteSpace(inputBox.Text))
             {
-                await EnviarMensajeAnimado($"You: {inputBox.Text}");
-
+                string mensaje = inputBox.Text;
+                await EnviarMensajeAnimado($"{UsuarioActual}: {mensaje}");
+                GuardarMensajeEnBD(null, null, mensaje); // Mensaje general
                 inputBox.Clear();
             }
         }
@@ -172,89 +179,67 @@ namespace Chat_ProyectoIG
 
         private void boton_agregar_Click(object sender, EventArgs e)
         {
-            string username = Microsoft.VisualBasic.Interaction.InputBox(
-                "Ingresa el nombre del usuario:",
+            string usuarioInput = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingresa el USUARIO (debe ser único):", // CAMBIO: Especificar que es el usuario
                 "Agregar Usuario",
                 "NuevoUsuario"
             );
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(usuarioInput))
             {
-                MessageBox.Show("No se ingresó ningún nombre.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No se ingresó ningún usuario.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Verificar si ya existe (sin emoji)
-            foreach (string usuario in memberList.Items)
+            // Verificar si ya existe en la lista local
+            foreach (string usuarioEnLista in memberList.Items)
             {
-                // Extraer nombre sin emoji
-                string nombreSinEmoji = usuario.Contains(" ") ? usuario.Substring(usuario.IndexOf(" ") + 1) : usuario;
-                if (nombreSinEmoji.Equals(username, StringComparison.OrdinalIgnoreCase))
+                if (usuarioEnLista.Equals(usuarioInput, StringComparison.OrdinalIgnoreCase))
                 {
-                    MessageBox.Show("Ese usuario ya existe.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Ese usuario ya existe en la lista local.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
             }
 
+            // Verificar si existe en la base de datos (por usuario)
+            if (!UsuarioExisteEnBD(usuarioInput))
+            {
+                var respuesta = MessageBox.Show($"El usuario '{usuarioInput}' no existe en la base de datos. ¿Desea agregarlo solo localmente?",
+                                              "Usuario no encontrado",
+                                              MessageBoxButtons.YesNo,
+                                              MessageBoxIcon.Question);
 
+                if (respuesta != DialogResult.Yes)
+                {
+                    return;
+                }
+            }
 
-            string nombreFinal = $"{username}";
-            memberList.Items.Add(nombreFinal);
-            MessageBox.Show($"Usuario '{nombreFinal}' agregado con éxito.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            memberList.Items.Add(usuarioInput);
+            MessageBox.Show($"Usuario '{usuarioInput}' agregado con éxito.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-
-        private void Crear_Grupo_Click(object sender, EventArgs e)
+        private bool UsuarioExisteEnBD(string usuario)
         {
-            string groupName = Microsoft.VisualBasic.Interaction.InputBox(
-                "Ingresa el nombre del grupo:",
-                "Crear Grupo",
-                "NuevoGrupo"
-            );
-
-            if (string.IsNullOrWhiteSpace(groupName))
+            try
             {
-                MessageBox.Show("No se ingresó ningún nombre de grupo.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Verificar si ya existe en groupList visualmente
-            foreach (string grupo in groupList.Items)
-            {
-                if (grupo.Equals(groupName, StringComparison.OrdinalIgnoreCase))
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
-                    MessageBox.Show("Ese grupo ya existe.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
+                    conn.Open();
+                    // CAMBIO: Verificar por 'usuario' en lugar de 'nombre'
+                    string query = "SELECT COUNT(*) FROM usuario WHERE usuario = @usuario";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@usuario", usuario);
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
                 }
             }
-
-            // Verificar si ya existe en la estructura interna
-            if (gruposConMiembros.ContainsKey(groupName))
+            catch (Exception ex)
             {
-                MessageBox.Show("Ese grupo ya existe internamente.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
+                MessageBox.Show("Error al verificar usuario: " + ex.Message);
+                return false;
             }
-
-            if (memberList.SelectedItems.Count == 0)
-            {
-                MessageBox.Show("Selecciona al menos un miembro en la lista para asignarlo al grupo.", "Sin miembros", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            List<string> miembrosSeleccionados = new List<string>();
-            foreach (var item in memberList.SelectedItems)
-            {
-                miembrosSeleccionados.Add(item.ToString());
-            }
-
-            gruposConMiembros[groupName] = miembrosSeleccionados;
-            groupList.Items.Add(groupName);
-
-            MessageBox.Show($"Grupo '{groupName}' creado con {miembrosSeleccionados.Count} miembro(s).", "Grupo creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-
-
 
         private void chatBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -655,6 +640,7 @@ namespace Chat_ProyectoIG
             }
         }
 
+        
         private async void MensajePrivado_Click(object sender, EventArgs e)
         {
             if (memberList.SelectedItem == null)
@@ -672,13 +658,10 @@ namespace Chat_ProyectoIG
             string destinatario = memberList.SelectedItem.ToString();
             string mensaje = inputBox.Text;
 
-
-            await EnviarMensajeAnimado($"[Privado a {destinatario}] Tú: {mensaje}");
-            GuardarMensajeEnBD("Tú", destinatario, null, mensaje);
-
+            await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensaje}");
+            GuardarMensajeEnBD(destinatario, null, mensaje); // CORRECCIÓN: 3 parámetros
             inputBox.Clear();
         }
-
 
         public void InicializarMenuReaccion()
         {
@@ -737,18 +720,10 @@ namespace Chat_ProyectoIG
             string grupo = groupList.SelectedItem.ToString();
             string mensaje = inputBox.Text;
 
-
-            await EnviarMensajeAnimado($"[Grupo: {grupo}] Tú: {mensaje}");
-            GuardarMensajeEnBD("Tú", null, grupo, mensaje);
-
+            await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensaje}");
+            GuardarMensajeEnBD(null, grupo, mensaje); // CORRECCIÓN: 3 parámetros
             inputBox.Clear();
         }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
 
         private async Task EnviarMensajeAnimado(string mensaje)
         {
@@ -810,7 +785,269 @@ namespace Chat_ProyectoIG
         }
 
         //método para guardar mensaje
-        private void GuardarMensajeEnBD(string remitente, string destinatario, string grupo, string mensaje)
+
+        private void Crear_Grupo_Click(object sender, EventArgs e)
+        {
+            string groupName = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingresa el nombre del grupo:",
+                "Crear Grupo",
+                "NuevoGrupo"
+            );
+
+            if (string.IsNullOrWhiteSpace(groupName))
+            {
+                MessageBox.Show("No se ingresó ningún nombre de grupo.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Verificar si ya existe en BD
+            if (GrupoExisteEnBD(groupName))
+            {
+                MessageBox.Show("Ese grupo ya existe en la base de datos.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            if (memberList.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecciona al menos un miembro en la lista para asignarlo al grupo.", "Sin miembros", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            List<string> miembrosSeleccionados = new List<string>();
+            foreach (var item in memberList.SelectedItems)
+            {
+                miembrosSeleccionados.Add(item.ToString());
+            }
+
+            // Guardar en BD
+            if (GuardarGrupoEnBD(groupName, miembrosSeleccionados))
+            {
+                gruposConMiembros[groupName] = miembrosSeleccionados;
+                groupList.Items.Add(groupName);
+                MessageBox.Show($"Grupo '{groupName}' creado con {miembrosSeleccionados.Count} miembro(s).", "Grupo creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private bool GrupoExisteEnBD(string nombreGrupo)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT COUNT(*) FROM grupos WHERE nombre_grupo = @nombre";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", nombreGrupo);
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al verificar grupo: " + ex.Message);
+                return false;
+            }
+        }
+
+        private bool GuardarGrupoEnBD(string nombreGrupo, List<string> miembros)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Insertar grupo
+                    string queryGrupo = "INSERT INTO grupos (nombre_grupo) VALUES (@nombre)";
+                    MySqlCommand cmdGrupo = new MySqlCommand(queryGrupo, conn);
+                    cmdGrupo.Parameters.AddWithValue("@nombre", nombreGrupo);
+                    cmdGrupo.ExecuteNonQuery();
+
+                    // Obtener ID del grupo insertado
+                    long grupoId = cmdGrupo.LastInsertedId;
+
+                    // CAMBIO: Buscar por 'usuario' en lugar de 'nombre'
+                    string queryMiembro = "INSERT INTO miembros_grupo (id_grupo, id_usuario) VALUES (@grupoId, (SELECT id_usuario FROM usuario WHERE usuario = @usuario LIMIT 1))";
+
+                    // Agregar al creador como miembro
+                    MySqlCommand cmdCreador = new MySqlCommand(queryMiembro, conn);
+                    cmdCreador.Parameters.AddWithValue("@grupoId", grupoId);
+                    cmdCreador.Parameters.AddWithValue("@usuario", UsuarioActual); 
+                    cmdCreador.ExecuteNonQuery();
+
+                    // Agregar demás miembros
+                    foreach (string miembro in miembros)
+                    {
+                        MySqlCommand cmdMiembro = new MySqlCommand(queryMiembro, conn);
+                        cmdMiembro.Parameters.AddWithValue("@grupoId", grupoId);
+                        cmdMiembro.Parameters.AddWithValue("@usuario", miembro); 
+                        cmdMiembro.ExecuteNonQuery();
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar grupo en BD: " + ex.Message);
+                return false;
+            }
+        }
+
+        private void CargarMensajes()
+        {
+            try
+            {
+                chatBox.Items.Clear();
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"SELECT m.remitente, m.destinatario, m.grupo, m.mensaje, m.fecha 
+                           FROM mensajes m 
+                           WHERE m.remitente = @usuario 
+                              OR m.destinatario = @usuario 
+                              OR m.destinatario IS NULL 
+                              OR m.grupo IN (
+                                  SELECT g.nombre_grupo 
+                                  FROM grupos g 
+                                  LEFT JOIN miembros_grupo mg ON g.id_grupo = mg.id_grupo 
+                                  WHERE mg.id_usuario = @usuarioId
+                              )
+                           ORDER BY m.fecha ASC";
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@usuario", UsuarioActual);
+                    cmd.Parameters.AddWithValue("@usuarioId", UsuarioActualId);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        string remitente = reader["remitente"].ToString();
+                        string destinatario = reader["destinatario"] == DBNull.Value ? null : reader["destinatario"].ToString();
+                        string grupo = reader["grupo"] == DBNull.Value ? null : reader["grupo"].ToString();
+                        string mensaje = reader["mensaje"].ToString();
+
+                        string mensajeFormateado;
+
+                        if (!string.IsNullOrEmpty(grupo))
+                            mensajeFormateado = $"[Grupo: {grupo}] {remitente}: {mensaje}";
+                        else if (!string.IsNullOrEmpty(destinatario))
+                        {
+                            if (remitente == UsuarioActual)
+                                mensajeFormateado = $"[Privado a {destinatario}] Tú: {mensaje}";
+                            else
+                                mensajeFormateado = $"[Privado] {remitente}: {mensaje}";
+                        }
+                        else
+                            mensajeFormateado = $"{remitente}: {mensaje}";
+
+                        chatBox.Items.Add(mensajeFormateado);
+                    }
+
+                    // Hacer scroll al final
+                    if (chatBox.Items.Count > 0)
+                        chatBox.TopIndex = chatBox.Items.Count - 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar mensajes: " + ex.Message);
+            }
+        }
+
+        private void CargarUsuariosDesdeBD()
+        {
+            try
+            {
+                memberList.Items.Clear();
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+                    // CAMBIO: Seleccionar 'usuario' en lugar de 'nombre'
+                    string query = "SELECT usuario FROM usuario WHERE usuario != @usuarioActual";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@usuarioActual", UsuarioActual);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        // CAMBIO: Agregar el usuario (único) en lugar del nombre
+                        memberList.Items.Add(reader["usuario"].ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar usuarios: " + ex.Message);
+            }
+        }
+
+        private void CargarGruposDesdeBD()
+        {
+            try
+            {
+                groupList.Items.Clear();
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"SELECT DISTINCT g.nombre_grupo 
+                           FROM grupos g 
+                           LEFT JOIN miembros_grupo mg ON g.id_grupo = mg.id_grupo 
+                           WHERE mg.id_usuario = @usuarioId OR g.creador_id = @usuarioId";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@usuarioId", UsuarioActualId);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        string grupo = reader["nombre_grupo"].ToString();
+                        groupList.Items.Add(grupo);
+
+                        // Cargar miembros del grupo en la estructura interna
+                        CargarMiembrosGrupo(grupo);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar grupos: " + ex.Message);
+            }
+        }
+
+        private void CargarMiembrosGrupo(string nombreGrupo)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+                    // CAMBIO: Seleccionar 'usuario' en lugar de 'nombre'
+                    string query = @"SELECT u.usuario 
+                           FROM miembros_grupo mg 
+                           JOIN usuario u ON mg.id_usuario = u.id_usuario 
+                           JOIN grupos g ON mg.id_grupo = g.id_grupo 
+                           WHERE g.nombre_grupo = @grupo";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@grupo", nombreGrupo);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    List<string> miembros = new List<string>();
+                    while (reader.Read())
+                    {
+                        miembros.Add(reader["usuario"].ToString());
+                    }
+
+                    gruposConMiembros[nombreGrupo] = miembros;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar miembros del grupo {nombreGrupo}: " + ex.Message);
+            }
+        }
+
+        private void GuardarMensajeEnBD(string destinatario, string grupo, string mensaje)
         {
             try
             {
@@ -820,7 +1057,7 @@ namespace Chat_ProyectoIG
 
                     string query = "INSERT INTO mensajes (remitente, destinatario, grupo, mensaje) VALUES (@remitente, @destinatario, @grupo, @mensaje)";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@remitente", remitente);
+                    cmd.Parameters.AddWithValue("@remitente", UsuarioActual);
                     cmd.Parameters.AddWithValue("@destinatario", string.IsNullOrEmpty(destinatario) ? DBNull.Value : (object)destinatario);
                     cmd.Parameters.AddWithValue("@grupo", string.IsNullOrEmpty(grupo) ? DBNull.Value : (object)grupo);
                     cmd.Parameters.AddWithValue("@mensaje", mensaje);
@@ -833,44 +1070,5 @@ namespace Chat_ProyectoIG
                 MessageBox.Show("Error al guardar mensaje: " + ex.Message);
             }
         }
-
-        //para cargar msjs anteriores
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            CargarMensajes();
-        }
-
-        private void CargarMensajes()
-        {
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    conn.Open();
-                    string query = "SELECT remitente, destinatario, grupo, mensaje, fecha FROM mensajes ORDER BY fecha ASC";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    MySqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        string remitente = reader["remitente"].ToString();
-                        string destinatario = reader["destinatario"] == DBNull.Value ? null : reader["destinatario"].ToString();
-                        string grupo = reader["grupo"] == DBNull.Value ? null : reader["grupo"].ToString();
-                        string mensaje = reader["mensaje"].ToString();
-
-                        if (!string.IsNullOrEmpty(grupo))
-                            chatBox.Items.Add($"[{grupo}] {remitente}: {mensaje}");
-                        else if (!string.IsNullOrEmpty(destinatario))
-                            chatBox.Items.Add($"[Privado a {destinatario}] {remitente}: {mensaje}");
-                        else
-                            chatBox.Items.Add($"{remitente}: {mensaje}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar mensajes: " + ex.Message);
-            }
-        }
-        }
     }
+}

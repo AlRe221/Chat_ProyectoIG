@@ -19,36 +19,39 @@ namespace Chat_ProyectoIG
             InitializeComponent();
         }
 
-        public bool Login(string usuarioLogin, string contrasenaLogin)
+        public bool Login(string usuarioLogin, string contrasenaLogin, out int usuarioId)
         {
+            usuarioId = -1;
+
             try
             {
-
-                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=chatuser;pwd=S3bas!2025_DBchat;database=chat"))
-
-               
-
+                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=57057goku75@jua57;database=chat"))
                 {
                     conn.Open();
 
-                    string query = "SELECT password FROM usuario WHERE usuario = @usuario";
+                    string query = "SELECT id_usuario, password FROM usuario WHERE usuario = @usuario";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@usuario", usuarioLogin);
 
-                    object resultado = cmd.ExecuteScalar();
+                    MySqlDataReader reader = cmd.ExecuteReader();
 
-                    if (resultado == null || resultado == DBNull.Value)
+                    if (!reader.Read())
                     {
                         MessageBox.Show("Usuario no existe");
                         return false;
                     }
 
-                    string contrasenaEncriptada = resultado.ToString();
+                    usuarioId = reader.GetInt32("id_usuario");
+                    string contrasenaEncriptada = reader["password"].ToString();
+                    reader.Close();
+
                     bool contrasenaCorrecta = VerificarContrasena(contrasenaLogin, contrasenaEncriptada);
 
                     if (!contrasenaCorrecta)
+                    {
                         MessageBox.Show("Contraseña incorrecta");
-
+                        usuarioId = -1;
+                    }
 
                     return contrasenaCorrecta;
                 }
@@ -56,6 +59,7 @@ namespace Chat_ProyectoIG
             catch (Exception ex)
             {
                 MessageBox.Show("Error en login: " + ex.Message);
+                usuarioId = -1;
                 return false;
             }
         }
@@ -86,13 +90,14 @@ namespace Chat_ProyectoIG
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            string usuario = textBox1.Text;
+            string usuarioLogin = textBox1.Text; // Esto es el campo 'usuario'
             string constrasena = textBox2.Text;
 
-            if (Login(usuario, constrasena))
+            if (Login(usuarioLogin, constrasena, out int usuarioId))
             {
-                Form1 formLogin = new Form1();
-                formLogin.Show();
+                // CAMBIO: Pasar usuarioLogin (que es el usuario único) en lugar del nombre
+                Form1 formChat = new Form1(usuarioLogin, usuarioId);
+                formChat.Show();
                 this.Hide();
             }
         }
