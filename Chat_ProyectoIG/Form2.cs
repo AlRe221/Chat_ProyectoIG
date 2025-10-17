@@ -99,7 +99,7 @@ namespace Chat_ProyectoIG
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=57057goku75@jua57;database=chat"))
+                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=angelito_1422;database=chat"))
                 {
                     conn.Open();
                     conn.Close();
@@ -132,7 +132,7 @@ namespace Chat_ProyectoIG
                     return;
                 }
 
-                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=57057goku75@jua57;database=chat"))
+                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=angelito_1422;database=chat"))
          
                 {
                     conn.Open();

@@ -40,9 +40,9 @@
             this.miembrosGrupo = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.chatPanel.SuspendLayout();
             this.bottomPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -67,13 +67,14 @@
             // 
             this.chatBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(57)))), ((int)(((byte)(63)))));
             this.chatBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.chatBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chatBox.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chatBox.ForeColor = System.Drawing.Color.White;
             this.chatBox.FormattingEnabled = true;
             this.chatBox.ItemHeight = 45;
-            this.chatBox.Location = new System.Drawing.Point(-1, -1);
+            this.chatBox.Location = new System.Drawing.Point(0, 0);
             this.chatBox.Name = "chatBox";
-            this.chatBox.Size = new System.Drawing.Size(501, 450);
+            this.chatBox.Size = new System.Drawing.Size(499, 456);
             this.chatBox.TabIndex = 0;
             this.chatBox.SelectedIndexChanged += new System.EventHandler(this.chatBox_SelectedIndexChanged);
             // 
@@ -254,17 +255,16 @@
             this.panel2.Size = new System.Drawing.Size(223, 533);
             this.panel2.TabIndex = 8;
             // 
-            // label1
+            // label3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Modern No. 20", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label1.Location = new System.Drawing.Point(3, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 18);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Lista grupos";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Modern No. 20", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label3.Location = new System.Drawing.Point(3, 285);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(84, 18);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "miembros ";
             // 
             // label2
             // 
@@ -277,16 +277,17 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "Usuarios";
             // 
-            // label3
+            // label1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Modern No. 20", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label3.Location = new System.Drawing.Point(3, 285);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(84, 18);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "miembros ";
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Modern No. 20", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label1.Location = new System.Drawing.Point(3, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(101, 18);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Lista grupos";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // Form1
             // 

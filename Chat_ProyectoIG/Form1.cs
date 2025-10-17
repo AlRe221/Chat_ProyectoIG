@@ -24,7 +24,7 @@ namespace Chat_ProyectoIG
         FlowLayoutPanel paraVarios = new FlowLayoutPanel();
 
         //cadena de conexión
-        string connectionString = "server=127.0.0.1;uid=root;pwd=57057goku75@jua57;database=chat";
+        string connectionString = "server=127.0.0.1;uid=root;pwd=angelito_1422;database=chat";
         public string UsuarioActual { get; set; }
         public int UsuarioActualId { get; set; }
 
@@ -473,7 +473,13 @@ namespace Chat_ProyectoIG
 
         private void GroupList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (groupList.SelectedItem == null) return;
+            if (groupList.SelectedItem == null)
+            {
+                miembrosGrupo.Items.Clear();
+                CargarMensajes(null);
+                return;
+
+            }
 
             string grupoSeleccionado = groupList.SelectedItem.ToString();
 
@@ -490,6 +496,8 @@ namespace Chat_ProyectoIG
             {
                 MessageBox.Show("Este grupo no tiene miembros asignados.", "Sin miembros", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
+            CargarMensajes(grupoSeleccionado);
         }
 
         public void InicializarMenuUsuario()
@@ -895,7 +903,7 @@ namespace Chat_ProyectoIG
             }
         }
 
-        private void CargarMensajes()
+        private void CargarMensajes(string grupoFiltro = null)
         {
             try
             {
@@ -903,7 +911,21 @@ namespace Chat_ProyectoIG
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = @"SELECT m.remitente, m.destinatario, m.grupo, m.mensaje, m.fecha 
+                    string query;
+                    MySqlCommand cmd;
+
+                    if (!string.IsNullOrEmpty(grupoFiltro))
+                    {
+                        query = @"SELECT m.remitente, m.destinatario, m.grupo, m.mensaje, m.fecha 
+                          FROM mensajes m 
+                          WHERE m.grupo = @grupo
+                          ORDER BY m.fecha ASC";
+                        cmd = new MySqlCommand(query, conn);
+                        cmd.Parameters.AddWithValue("@grupo", grupoFiltro);
+                    }
+                    else
+                    {
+                        query = @"SELECT m.remitente, m.destinatario, m.grupo, m.mensaje, m.fecha 
                            FROM mensajes m 
                            WHERE m.remitente = @usuario 
                               OR m.destinatario = @usuario 
@@ -916,35 +938,37 @@ namespace Chat_ProyectoIG
                               )
                            ORDER BY m.fecha ASC";
 
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@usuario", UsuarioActual);
-                    cmd.Parameters.AddWithValue("@usuarioId", UsuarioActualId);
-
-                    MySqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        string remitente = reader["remitente"].ToString();
-                        string destinatario = reader["destinatario"] == DBNull.Value ? null : reader["destinatario"].ToString();
-                        string grupo = reader["grupo"] == DBNull.Value ? null : reader["grupo"].ToString();
-                        string mensaje = reader["mensaje"].ToString();
-
-                        string mensajeFormateado;
-
-                        if (!string.IsNullOrEmpty(grupo))
-                            mensajeFormateado = $"[Grupo: {grupo}] {remitente}: {mensaje}";
-                        else if (!string.IsNullOrEmpty(destinatario))
-                        {
-                            if (remitente == UsuarioActual)
-                                mensajeFormateado = $"[Privado a {destinatario}] Tú: {mensaje}";
-                            else
-                                mensajeFormateado = $"[Privado] {remitente}: {mensaje}";
-                        }
-                        else
-                            mensajeFormateado = $"{remitente}: {mensaje}";
-
-                        chatBox.Items.Add(mensajeFormateado);
+                        cmd = new MySqlCommand(query, conn);
+                        cmd.Parameters.AddWithValue("@usuario", UsuarioActual);
+                        cmd.Parameters.AddWithValue("@usuarioId", UsuarioActualId);
                     }
 
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string remitente = reader["remitente"].ToString();
+                            string destinatario = reader["destinatario"] == DBNull.Value ? null : reader["destinatario"].ToString();
+                            string grupo = reader["grupo"] == DBNull.Value ? null : reader["grupo"].ToString();
+                            string mensaje = reader["mensaje"].ToString();
+
+                            string mensajeFormateado;
+
+                            if (!string.IsNullOrEmpty(grupo))
+                                mensajeFormateado = $"[Grupo: {grupo}] {remitente}: {mensaje}";
+                            else if (!string.IsNullOrEmpty(destinatario))
+                            {
+                                if (remitente == UsuarioActual)
+                                    mensajeFormateado = $"[Privado a {destinatario}] Tú: {mensaje}";
+                                else
+                                    mensajeFormateado = $"[Privado] {remitente}: {mensaje}";
+                            }
+                            else
+                                mensajeFormateado = $"{remitente}: {mensaje}";
+
+                            chatBox.Items.Add(mensajeFormateado);
+                        }
+                    }
                     // Hacer scroll al final
                     if (chatBox.Items.Count > 0)
                         chatBox.TopIndex = chatBox.Items.Count - 1;
