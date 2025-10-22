@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,29 +31,154 @@ namespace Chat_ProyectoIG
 
         //preguntar al profe: tengo que poner todos los emojis que puse en mi boton emojis o solo algunos?
 
+        Dictionary<string, string> imagenEmoji = new Dictionary<string, string>
+        {
+            {":smile:", "emojis/smileEmoji.png"},
+            {":sad:", "emojis/sadEmoji.png"},
+            {":angry:", "emojis/angryFace.png"},
+            {":rage:", "emojis/rageEmoji.png"},
+            {":heart_eyes:", "emojis/heartEyesEmoji.png"},
+            {":joy:", "emojis/joyEmoji.png"},
+            {":shy:", "emojis/shyEmoji.png"},
+            {":scream:", "emojis/screamFace.png"},
+            {":sleeping:", "emojis/sleepingFace.png"},
+            {":disgust:","emojis/disgustEmoji.png" },
+            //animales
+            {":dog:", "emojis/dogEmoji.png"},
+            {":cat:", "emojis/catEmoji.png"},
+            {":unicorn:", "emojis/unicornEmoji.png"},
+            {":fox:", "emojis/foxEmoji.png"},
+            {":butterfly:", "emojis/butterflyEmoji.png"},
+            {":bear:","emojis/bearEmoji.png" },
+            {":penguin:","emojis/penguinEmoji.png" },
+            {":gorila:","emojis/gorilaEmoji.png" },
+            {":fish:","emojis/fishEmoji.png" },
+            {":bunny:","emojis/bunnyEmoji.png" },
+            //comida
+            {":croissant:", "emojis/crossaintEmoji.png"},
+            {":avocato:", "emojis/avocadoEmoji.png"},
+            {":egg:", "emojis/eggEmoji.png"},
+            {":sandwich:", "emojis/sandwichEmoji.png"},
+            {":pickle:", "emojis/pickleEmoji.png" },
+            {":potato:","emojis/potatoEmoji.png" },
+            {":carrot:","emojis/carrotEmoji.png" },
+            {":bread:","emojis/breadEmoji.png" },
+            {":cake:","emojis/cakeEmoji.png" },
+            {"icecream:","emojis/icecreamEmoji.png" },
+            //varios
+            {":redheart:", "emojis/HeartEmoji.png"},
+            {":blueheart:","emojis/blueheartEmoji.png" },
+            {":purpleheart:","emojis/purpleheartEmoji.png" },
+            {":yellowheart:","emojis/yellowheartEmoji.png" },
+            {":greenheart:","emojis/greenheartEmoji.png" },
+            {":star:","emojis/starEmoji.png" },
+            {":moon:","emojis/moonEmoji.png" },
+            {":sun:","emojis/sunEmoji.png" },
+            {":scissors:","emojis/scissorsEmoji.png" },
+            {":rainbow:","emojis/rainbowEmoji.png" }
+
+
+        }; //diccionario para guardar los emojis y su ruta de acceso
+
+
+        Dictionary<string, string> emojiCategorias = new Dictionary<string, string>
+        {
+            {":smile:", "caritas"},
+            {":sad:", "caritas"},
+            {":angry:", "caritas"},
+            {":rage:", "caritas"},
+            {":heart_eyes:", "caritas"},
+            {":joy:", "caritas"},
+            {":shy:", "caritas"},
+            {":scream:", "caritas"},
+            {":sleeping:", "caritas"},
+            {":disgust:","caritas" },
+            //animales
+            {":dog:", "animales"},
+            {":cat:", "animales"},
+            {":unicorn:", "animales"},
+            {":fox:", "animales"},
+            {":butterfly:", "animales"},
+            {":bear:","animales" },
+            {":penguin:","animales" },
+            {":gorila:","animales" },
+            {":fish:","animales" },
+            {":bunny:","animales" },
+            //comida
+            {":croissant:", "comida"},
+            {":avocato:", "comida"},
+            {":egg:", "comida"},
+            {":sandwich:", "comida"},
+            {":pickle:", "comida" },
+            {":potato:","comida" },
+            {":carrot:","comida" },
+            {":bread:","comida" },
+            {":cake:","comida" },
+            {"icecream:","comida" },
+            //varios
+            {":redheart:", "varios"},
+            {":blueheart:","varios" },
+            {":purpleheart:","varios" },
+            {":yellowheart:","varios" },
+            {":greenheart:","varios" },
+            {":star:","varios" },
+            {":moon:","varios" },
+            {":sun:","varios" },
+            {":scissors:","varios" },
+            {":rainbow:","varios" }
+        }; //identificar a que tapPage va
+
+        // REEMPLAZA ESTO EN TU CLASE Form1
         Dictionary<string, string> idEmoji = new Dictionary<string, string>
         {
-            {":smile:", "🙂"},
-            {":sad:", "😞"},
-            {":angry:", "😠"},
-            {":rage:", "🤬"},
-            {":heart_eyes:", "😍"},
-            {":joy:", "😂"},
-            {":shy:", "😳"},
-            {":scream:", "😱"},
-            {":sleeping:", "😴"},
-            {":heart:", "❤"},
-            {":dog:", "🐶"},
-            {":cat:", "😺"},
-            {":unicorn:", "🦄"},
-            {":fox:", "🦊"},
-            {":butterfly:", "🦋"},
-            {":croissant:", "🥐"},
-            {":avocato:", "🥑"},
-            {":egg:", "🥚"},
-            {":sandwich:", "🥪"}
-
-        }; //diccionario para guardar los emojis y su id 
+            // Caritas
+            {":smile:", "\U0001F642"}, // 🙂
+            {":sad:", "\U0001F625"},   // 😞
+            {":angry:", "\U0001F620"}, // 😠
+            {":rage:", "\U0001F92C"},  // 🤬 (Código: 1F92C)
+            {":heart_eyes:", "\U0001F60D"}, // 😍
+            {":joy:", "\U0001F602"},   // 😂
+            {":shy:", "\U0001F633"},   // 😳
+            {":scream:", "\U0001F631"}, // 😱
+            {":sleeping:", "\U0001F634"}, // 😴
+            {":disgust:", "\U0001F922"}, // 🤢
+    
+            // Animales
+            {":dog:", "\U0001F436"},   // 🐶
+            {":cat:", "\U0001F63A"},   // 😺
+            {":unicorn:", "\U0001F984"}, // 🦄
+            {":fox:", "\U0001F98A"},   // 🦊
+            {":butterfly:", "\U0001F98B"}, // 🦋
+            {":bear:", "\U0001F43B"},   // 🐻
+            {":penguin:", "\U0001F427"}, // 🐧
+            {":gorila:", "\U0001F98D"}, // 🦍
+            {":fish:", "\U0001F41F"},   // 🎣 (Nota: Usaste la caña de pescar, pero el código es este)
+            {":bunny:", "\U0001F430"},  // 🐰
+    
+            // Comida
+            {":croissant:", "\U0001F950"}, // 🥐
+            {":avocato:", "\U0001F951"},  // 🥑
+            {":egg:", "\U0001F95A"},     // 🥚
+            {":sandwich:", "\U0001F96A"}, // 🥪
+            {":pickle:", "\U0001F952"},   // 🥒
+            {":potato:", "\U0001F954"},   // 🥔
+            {":carrot:", "\U0001F955"},   // 🥕
+            {":bread:", "\U0001F35E"},    // 🍞
+            {":cake:", "\U0001F382"},     // 🎂
+            {"icecream:", "\U0001F368"}, // 🍦 (Corregí tu clave, era "icecream")
+    
+            // Varios
+            {":redheart:", "\U00002764\U0000FE0F"}, // ❤️ (requiere un VARIATION SELECTOR)
+            {":blueheart:", "\U0001F499"}, // 💙
+            {":purpleheart:", "\U0001F49C"}, // 💜
+            {":yellowheart:", "\U0001F49B"}, // 💛
+            {":greenheart:", "\U0001F49A"}, // 💚
+            {":star:", "\U00002B50"},      // ⭐
+            {":moon:", "\U0001F315"},      // 🌕
+            {":sun:", "\U00002600\U0000FE0F"}, // ☀️ (requiere un VARIATION SELECTOR)
+            {":scissors:", "\U00002702\U0000FE0F"}, // ✂️ (requiere un VARIATION SELECTOR)
+            {":rainbow:", "\U0001F308"}     // 🌈
+        };
 
         Dictionary<string, List<string>> gruposConMiembros = new Dictionary<string, List<string>>();
         ContextMenuStrip menuReaccion = new ContextMenuStrip();
@@ -75,7 +201,7 @@ namespace Chat_ProyectoIG
 
             );
             chatBox.Font = new Font("Seoge UI", 15, FontStyle.Bold);
-            // generaEmoji(generarEmoji);
+            // generaEmoji(generarEmoi);
             generaEmoji(generarEmojis);
 
             memberList.SelectionMode = SelectionMode.MultiExtended;
@@ -141,11 +267,17 @@ namespace Chat_ProyectoIG
         // Send chat message
         private async void SendButton_Click(object sender, EventArgs e)
         {
+            string mensajeEnviado = inputBox.Text;
             if (!string.IsNullOrWhiteSpace(inputBox.Text))
             {
-                string mensaje = inputBox.Text;
-                await EnviarMensajeAnimado($"{UsuarioActual}: {mensaje}");
-                GuardarMensajeEnBD(null, null, mensaje); // Mensaje general
+                // 1. Sustituir todos los atajos por sus caracteres Unicode
+                foreach (var par in idEmoji)
+                {
+                    // Reemplazar todas las ocurrencias en el texto
+                    mensajeEnviado = mensajeEnviado.Replace(par.Key, par.Value);
+                }
+                await EnviarMensajeAnimado($"{UsuarioActual}: {mensajeEnviado}");
+                GuardarMensajeEnBD(null, null, mensajeEnviado); // Mensaje general
                 inputBox.Clear();
             }
         }
@@ -246,64 +378,144 @@ namespace Chat_ProyectoIG
 
         }
 
+
+
+
+
+        /*  private void inputBox_TextChanged(object sender, EventArgs e)
+          {
+              inputBox.TextChanged -= inputBox_TextChanged;
+
+              string texto = inputBox.Text;
+              int nuevaPosicionCursor = inputBox.SelectionStart;
+              bool reemplazoHecho = false;
+              Color bgColor = inputBox.BackColor;
+              int emojiSize = 18;
+
+              foreach (var par in imagenEmoji)
+              {
+                  string atajo = par.Key;
+                  string rutaImagen = par.Value;
+                  int index = -1;
+
+                  // Lógica de búsqueda del atajo
+                  if (texto.StartsWith(atajo)) index = 0;
+                  else if (texto.IndexOf(" " + atajo) != -1) index = texto.IndexOf(" " + atajo) + 1;
+
+                  if (index != -1)
+                  {
+                      Image img = null;
+                      try { img = Image.FromFile(rutaImagen); } catch { }
+
+                      if (img != null)
+                      {
+                          int lengthToDelete = atajo.Length;
+
+                          // Seleccionar el atajo de texto y no sustituirlo aún
+                          inputBox.SelectionStart = index;
+                          inputBox.SelectionLength = lengthToDelete;
+
+                          // *** Inserción de la Imagen con Fondo Corregido ***
+                          Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
+                          using (Graphics g = Graphics.FromImage(finalImage))
+                          {
+                              g.Clear(bgColor);
+                              g.DrawImage(img, 0, 0, emojiSize, emojiSize);
+                          }
+
+                          // Usamos el portapapeles para insertar la imagen sobre el texto seleccionado
+                          Clipboard.SetImage(finalImage);
+                          inputBox.Paste();
+                          Clipboard.Clear();
+
+                          nuevaPosicionCursor = index + atajo.Length;
+                          reemplazoHecho = true;
+                          break;
+                      }
+                  }
+              }
+
+              inputBox.SelectionStart = Math.Min(nuevaPosicionCursor, inputBox.Text.Length);
+              inputBox.SelectionLength = 0;
+              inputBox.TextChanged += inputBox_TextChanged;
+          }*/
+
+
         private void inputBox_TextChanged(object sender, EventArgs e)
         {
-            //necestio hacer que, cuando se escriba :elemojiquesea:, se transforme directamente al emoji. 
+            inputBox.TextChanged -= inputBox_TextChanged;
+
             string texto = inputBox.Text;
-            if (texto.StartsWith(":"))
-            {
-                idEmoji.TryGetValue(texto, out string emoji); //buscara en el diccionario el emoji que coincida con el texto. 
-                if (emoji != null)
-                {
-                    inputBox.Text = emoji;
-                }
+            int nuevaPosicionCursor = inputBox.SelectionStart;
+            Color bgColor = inputBox.BackColor;
+            int emojiSize = 18;
 
-            }
-            else
+            foreach (var par in imagenEmoji)
             {
-                int i = 0;
-                while (i < texto.Length - 1)
-                {
-                    string aux = "";
+                string atajo = par.Key;
+                string rutaImagen = par.Value;
+                int index = -1;
 
-                    if (texto[i] == ' ' && texto[i + 1] == ':')
+                if (texto.StartsWith(atajo)) index = 0;
+                else if (texto.IndexOf(" " + atajo) != -1) index = texto.IndexOf(" " + atajo) + 1;
+
+                if (index != -1)
+                {
+                    Image img = null;
+                    try { img = Image.FromFile(rutaImagen); } catch { }
+
+                    if (img != null)
                     {
-                        aux = texto.Substring(i + 1); //tomar desde el : hasta el final 
-                        string subaux = "";
-                        int j = 0;
+                        // Paso A: Eliminar el atajo de texto y dejar un espacio
+                        inputBox.SelectionStart = index;
+                        inputBox.SelectionLength = atajo.Length;
+                        inputBox.SelectedText = " "; // Se reemplaza el atajo por un espacio
 
-                        while (j < aux.Length)
+                        // Paso B: Insertar la imagen sobre el espacio
+                        Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
+                        using (Graphics g = Graphics.FromImage(finalImage))
                         {
-                            subaux += aux[j]; //se va formando la palabra
-                            if (aux[j] == ':' && subaux.Length > 1)
-                            {
-                                break;
-                            }
-                            j++;
+                            g.Clear(bgColor);
+                            g.DrawImage(img, 0, 0, emojiSize, emojiSize);
                         }
-                        idEmoji.TryGetValue(subaux, out string emoji); //buscara en el diccionario el emoji que coincida con el texto. 
-                        if (emoji != null)
-                        {
-                            int startIndex = i + 1; //es para identificar donde inician los : 
-                            texto = texto.Substring(0, startIndex) + emoji + texto.Substring(startIndex + subaux.Length); //se concatena lo primero que no es emoji, con el emoji, con el demas texto si es que hay mas texto despues del emoji
-                            inputBox.Text = texto;
 
-                            // Ajustar índices para continuar después del emoji
-                            aux = texto.Substring(j + 1);
-                            j = 0;
+                        // Cursor al inicio del espacio
+                        inputBox.SelectionStart = index;
+                        inputBox.SelectionLength = 1; // Selecciona el espacio
 
-                        }
+                        Clipboard.SetImage(finalImage);
+                        inputBox.Paste(); // La imagen se pega sobre el espacio.
+                        Clipboard.Clear();
+
+                        // Paso C: Insertar el atajo de texto REAL (¡para enviarlo!)
+                        // El atajo de texto se inserta inmediatamente después de la imagen.
+
+                        inputBox.SelectionStart = index + 1; // Posición después de la imagen
+                        inputBox.SelectionLength = 0;
+
+                        // Aplicar formato invisible (fuente pequeña y color de fondo)
+                        inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
+                        inputBox.SelectionColor = bgColor;
+
+                        // Insertar el atajo de texto REAL (ej: ":smile:")
+                        inputBox.SelectedText = atajo;
+
+                        // Restablecer el formato normal para el texto que sigue
+                        inputBox.SelectionFont = inputBox.Font;
+                        inputBox.SelectionColor = inputBox.ForeColor;
+
+                        // El nuevo cursor debe saltar la imagen y el atajo oculto
+                        nuevaPosicionCursor = index + 1 + atajo.Length;
+                        break;
                     }
-
-                    i++;
-
                 }
-
             }
-            inputBox.SelectionStart = texto.Length;
-            ResaltarMenciones();
 
+            inputBox.SelectionStart = Math.Min(nuevaPosicionCursor, inputBox.Text.Length);
+            inputBox.SelectionLength = 0;
+            inputBox.TextChanged += inputBox_TextChanged;
         }
+
 
         private void emoji_Click(object sender, EventArgs e)
         {
@@ -316,12 +528,18 @@ namespace Chat_ProyectoIG
             paracaritas.Dock = DockStyle.Fill; //para que ocupe todo el espacio dentro del tabpage
             paracaritas.AutoScroll = true; //para que tenga scroll
 
-            for (int i = 128512; i <= 128591; i++) //rango de emojis
+            foreach (var emojiItem in imagenEmoji) // Iteramos sobre TODOS los emojis
             {
-                Button btn = crear_boton(i); //creamos el boton con el emoji dentro
-                boton_click(btn); //click del boton 
+                string claveEmoji = emojiItem.Key;
+                string rutaImagen = emojiItem.Value;
 
-                paracaritas.Controls.Add(btn); //agregar el boton al floylayoutpanel para que se muestren, ya que en tap control no esta permitido
+                // VERIFICAMOS si pertenece a la categoría "caritas"
+                if (emojiCategorias.TryGetValue(claveEmoji, out string categoria) && categoria == "caritas")
+                {
+                    // Creamos y añadimos SÓLO las caritas
+                    Button btn = crear_boton_imagen(claveEmoji, rutaImagen);
+                    paracaritas.Controls.Add(btn);
+                }
             }
 
         }
@@ -331,13 +549,17 @@ namespace Chat_ProyectoIG
             paraAnimalitos.Dock = DockStyle.Fill;
             paraAnimalitos.AutoScroll = true;
 
-            for (int i = 129408; i <= 129448; i++) //rango de emojis
+            foreach (var emojiItem in imagenEmoji)
             {
-                Button btn = crear_boton(i);
-                boton_click(btn);
+                string claveEmoji = emojiItem.Key;
+                string rutaImagen = emojiItem.Value;
 
-                paraAnimalitos.Controls.Add(btn);
-
+                // Filtramos por "animales"
+                if (emojiCategorias.TryGetValue(claveEmoji, out string categoria) && categoria == "animales")
+                {
+                    Button btn = crear_boton_imagen(claveEmoji, rutaImagen);
+                    paraAnimalitos.Controls.Add(btn);
+                }
             }
 
         }
@@ -347,36 +569,60 @@ namespace Chat_ProyectoIG
             paraVarios.Dock = DockStyle.Fill;
             paraVarios.AutoScroll = true;
 
-            for (int i = 9984; i <= 10175; i++) //rango de emojis
+            foreach (var emojiItem in imagenEmoji)
             {
-                Button btn = crear_boton(i);
-                boton_click(btn);
+                string claveEmoji = emojiItem.Key;
+                string rutaImagen = emojiItem.Value;
 
-                paraVarios.Controls.Add(btn);
+                // Filtramos por "animales"
+                if (emojiCategorias.TryGetValue(claveEmoji, out string categoria) && categoria == "varios")
+                {
+                    Button btn = crear_boton_imagen(claveEmoji, rutaImagen);
+                    paraVarios.Controls.Add(btn);
+                }
             }
 
         }
+
         private void agregarComida()
         {
             paraComida.Dock = DockStyle.Fill;
             paraComida.AutoScroll = true;
 
-            for (int i = 129360; i <= 129391; i++) //rango de emojis
+            foreach (var emojiItem in imagenEmoji)
             {
-                Button btn = crear_boton(i);
-                boton_click(btn);
+                string claveEmoji = emojiItem.Key;
+                string rutaImagen = emojiItem.Value;
 
-                paraComida.Controls.Add(btn);
+                // Filtramos por "animales"
+                if (emojiCategorias.TryGetValue(claveEmoji, out string categoria) && categoria == "comida")
+                {
+                    Button btn = crear_boton_imagen(claveEmoji, rutaImagen);
+                    paraComida.Controls.Add(btn);
+                }
             }
 
         }
 
-        private Button crear_boton(int i)
+     
+
+        private Button crear_boton_imagen(string claveEmoji, string rutaImagen)
         {
             Button btn = new Button();
-            btn.Size = new Size(40, 40);
-            btn.Text = char.ConvertFromUtf32(i); //convertir a emoji
-            btn.Font = new Font("Segoe UI Emoji", 16); //fuente de emoji
+            btn.Size = new Size(60, 60);
+            btn.Tag = claveEmoji;
+
+            try
+            {
+                btn.BackgroundImage = Image.FromFile(rutaImagen);
+                btn.BackgroundImageLayout = ImageLayout.Stretch;
+            }
+            catch (FileNotFoundException ex)
+            {
+
+            }
+
+            boton_click(btn);
             return btn;
         }
 
@@ -384,10 +630,28 @@ namespace Chat_ProyectoIG
         {
             btn.Click += (s, e) =>
             {
-                inputBox.Text += btn.Text; //agregar emoji al richtextbox
+                // La clave del diccionario debe estar en el Tag del botón
+                if (imagenEmoji.TryGetValue(btn.Tag.ToString(), out string rutaImagen))
+                {
+                    Image img = null;
+                    try
+                    {
+                        img = Image.FromFile(rutaImagen);
+
+                        // Insertar la imagen
+                        Image resizedImage = new Bitmap(img, 18, 18);
+                        Clipboard.SetImage(resizedImage);
+                        inputBox.Paste();
+                        Clipboard.Clear();
+                    }
+                    catch { }
+                }
+
                 generarEmojis.Visible = false;
             };
         }
+
+
         private void generaEmoji(TabControl generarEmojis)
         {
             crear_cuadro_emojis();

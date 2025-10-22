@@ -111,7 +111,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.inputBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(68)))), ((int)(((byte)(75)))));
             this.inputBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.inputBox.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.inputBox.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.inputBox.ForeColor = System.Drawing.Color.White;
             this.inputBox.Location = new System.Drawing.Point(14, 25);
             this.inputBox.Name = "inputBox";
