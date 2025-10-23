@@ -386,132 +386,7 @@ namespace Chat_ProyectoIG
 
 
 
-        /* private void inputBox_TextChanged(object sender, EventArgs e)
-         {
-             // 1. DESACTIVACIÓN
-             inputBox.TextChanged -= inputBox_TextChanged;
-
-             string texto = inputBox.Text;
-             int nuevaPosicionCursor = inputBox.SelectionStart;
-             Color bgColor = inputBox.BackColor;
-             int emojiSize = 18;
-
-             // Variables para la sustitución
-             string atajoEncontrado = null;
-             string rutaImagenEncontrada = null;
-             int indexSustitucion = -1;
-
-             try
-             {
-                 // 2. BÚSQUEDA DEL ATAJO
-                 foreach (var par in imagenEmoji)
-                 {
-                     string atajo = par.Key;
-                     string rutaImagen = par.Value;
-                     int index = -1;
-
-                     if (texto.StartsWith(atajo)) index = 0;
-                     else if (texto.IndexOf(" " + atajo) != -1) index = texto.IndexOf(" " + atajo) + 1;
-
-                     if (index != -1)
-                     {
-                         atajoEncontrado = atajo;
-                         rutaImagenEncontrada = rutaImagen;
-                         indexSustitucion = index;
-                         break; // Solo sustituimos un emoji por evento.
-                     }
-                 }
-
-                 if (atajoEncontrado != null)
-                 {
-                     // 3. PREPARACIÓN
-                     // Reemplazar el atajo por un marcador temporal único para mantener la posición.
-                     string textoMarcado = texto.Remove(indexSustitucion, atajoEncontrado.Length)
-                                               .Insert(indexSustitucion, "#");
-
-                     // Posición inicial del cursor para la reconstrucción
-                     nuevaPosicionCursor = indexSustitucion + 1;
-
-                     Image img = null;
-                     try { img = Image.FromFile(rutaImagenEncontrada); } catch { return; } // Si falla la imagen, salir.
-
-                     // Preparar la imagen para el portapapeles
-                     Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
-                     using (Graphics g = Graphics.FromImage(finalImage))
-                     {
-                         g.Clear(bgColor);
-                         g.DrawImage(img, 0, 0, emojiSize, emojiSize);
-                     }
-                     Clipboard.SetImage(finalImage);
-
-                     // 4. RECONSTRUCCIÓN (Esto elimina el estado corrupto)
-                     inputBox.Clear();
-
-                     int ultimoIndex = 0;
-                     int markerIndex = textoMarcado.IndexOf('#');
-
-                     // 4.1. Insertar texto ANTES del emoji (formato normal)
-                     if (markerIndex > 0)
-                     {
-                         inputBox.SelectedText = textoMarcado.Substring(0, markerIndex);
-                         ultimoIndex = markerIndex;
-                     }
-
-                     // 4.2. Insertar el emoji (IMAGEN)
-                     inputBox.SelectionStart = ultimoIndex;
-                     inputBox.SelectionLength = 0;
-                     inputBox.Paste(); // Pega la imagen
-
-                     // 4.3. Insertar atajo OCULTO y Espacio Amortiguador
-                     inputBox.SelectionStart = ultimoIndex + 1; // Después de la imagen
-                     inputBox.SelectionLength = 0;
-
-                     // Aplicar formato invisible al atajo
-                     inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
-                     inputBox.SelectionColor = bgColor;
-                     inputBox.SelectedText = atajoEncontrado;
-
-                     // Restablecer el formato normal
-                     inputBox.SelectionFont = inputBox.Font;
-                     inputBox.SelectionColor = inputBox.ForeColor;
-
-                     // Insertar el espacio amortiguador (CRÍTICO para la estabilidad del cursor)
-                     inputBox.SelectedText = " ";
-
-                     // Mover el punto de inserción para el texto restante
-                     ultimoIndex += 1 + atajoEncontrado.Length + 1; // 1 (imagen) + atajo + 1 (espacio)
-
-                     // 4.4. Insertar texto DESPUÉS del emoji
-                     if (markerIndex < textoMarcado.Length - 1)
-                     {
-                         string textoRestante = textoMarcado.Substring(markerIndex + 1);
-
-                         // Forzar el formato normal ANTES de insertar el texto restante
-                         inputBox.SelectionStart = ultimoIndex;
-                         inputBox.SelectionLength = 0;
-                         inputBox.SelectionFont = inputBox.Font;
-                         inputBox.SelectionColor = inputBox.ForeColor;
-
-                         inputBox.SelectedText = textoRestante;
-                         ultimoIndex += textoRestante.Length;
-                     }
-
-                     // Limpiar el portapapeles y actualizar el cursor final
-                     Clipboard.Clear();
-                     nuevaPosicionCursor = ultimoIndex; // El cursor final debe ir al final de todo el texto
-                 }
-             }
-             finally
-             {
-                 // 5. RESTAURACIÓN FINAL Y FOCO (Síncrono y forzado)
-                 inputBox.SelectionStart = Math.Min(nuevaPosicionCursor, inputBox.Text.Length);
-                 inputBox.SelectionLength = 0;
-                 inputBox.Focus();
-
-                 // 6. Reactivar el evento
-                 inputBox.TextChanged += inputBox_TextChanged;
-             }
-         }*/
+        
 
 
         private static bool isAwaitingSubstitution = false;
@@ -1191,8 +1066,8 @@ namespace Chat_ProyectoIG
             }
         }
 
-        
-        private async void MensajePrivado_Click(object sender, EventArgs e)
+
+        /*private async void MensajePrivado_Click(object sender, EventArgs e)
         {
             if (memberList.SelectedItem == null)
             {
@@ -1211,6 +1086,43 @@ namespace Chat_ProyectoIG
 
             await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensaje}");
             GuardarMensajeEnBD(destinatario, null, mensaje); // CORRECCIÓN: 3 parámetros
+            inputBox.Clear();
+        }*/
+
+        private async void MensajePrivado_Click(object sender, EventArgs e)
+        {
+            if (memberList.SelectedItem == null)
+            {
+                MessageBox.Show("Selecciona un usuario para enviarle un mensaje privado.", "Sin selección");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(inputBox.Text))
+            {
+                MessageBox.Show("Escribe un mensaje antes de enviarlo.", "Mensaje vacío");
+                return;
+            }
+
+            string destinatario = memberList.SelectedItem.ToString();
+
+            // Obtener el texto visible, ignorando el atajo oculto.
+            string mensajeEnviado = inputBox.Text;
+
+            // Limpieza de caracteres de control
+            mensajeEnviado = mensajeEnviado.Replace("\u0001", string.Empty);
+            mensajeEnviado = mensajeEnviado.Replace("\u0002", string.Empty);
+            mensajeEnviado = mensajeEnviado.Trim();
+
+            // Sustituir atajos por caracteres Unicode (como en SendButton_Click)
+            foreach (var par in idEmoji)
+            {
+                mensajeEnviado = mensajeEnviado.Replace(par.Key, par.Value);
+            }
+
+            // Enviar y guardar
+            await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensajeEnviado}");
+            GuardarMensajeEnBD(destinatario, null, mensajeEnviado);
+
             inputBox.Clear();
         }
 
@@ -1254,6 +1166,28 @@ namespace Chat_ProyectoIG
             }
         }
 
+        /* private async void EnviarMensajeAGrupo_Click(object sender, EventArgs e)
+         {
+             if (groupList.SelectedItem == null)
+             {
+                 MessageBox.Show("Selecciona un grupo para enviar el mensaje.", "Grupo no seleccionado");
+                 return;
+             }
+
+             if (string.IsNullOrWhiteSpace(inputBox.Text))
+             {
+                 MessageBox.Show("Escribe un mensaje antes de enviarlo.", "Mensaje vacío");
+                 return;
+             }
+
+             string grupo = groupList.SelectedItem.ToString();
+             string mensaje = inputBox.Text;
+
+             await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensaje}");
+             GuardarMensajeEnBD(null, grupo, mensaje); // CORRECCIÓN: 3 parámetros
+             inputBox.Clear();
+         }*/
+
         private async void EnviarMensajeAGrupo_Click(object sender, EventArgs e)
         {
             if (groupList.SelectedItem == null)
@@ -1269,12 +1203,30 @@ namespace Chat_ProyectoIG
             }
 
             string grupo = groupList.SelectedItem.ToString();
-            string mensaje = inputBox.Text;
 
-            await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensaje}");
-            GuardarMensajeEnBD(null, grupo, mensaje); // CORRECCIÓN: 3 parámetros
+            // 1. Obtener el texto visible, ignorando el atajo oculto.
+            string mensajeEnviado = inputBox.Text;
+
+            // 2. Lógica de Limpieza y Sustitución (como en SendButton_Click)
+
+            // Limpieza de caracteres de control
+            mensajeEnviado = mensajeEnviado.Replace("\u0001", string.Empty);
+            mensajeEnviado = mensajeEnviado.Replace("\u0002", string.Empty);
+            mensajeEnviado = mensajeEnviado.Trim();
+
+            // Sustituir atajos por caracteres Unicode (usando el diccionario idEmoji)
+            foreach (var par in idEmoji)
+            {
+                mensajeEnviado = mensajeEnviado.Replace(par.Key, par.Value);
+            }
+
+            // 3. Enviar y guardar
+            await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensajeEnviado}");
+            GuardarMensajeEnBD(null, grupo, mensajeEnviado); // El mensaje general a grupo usa el grupo como segundo parámetro
+
             inputBox.Clear();
         }
+
 
         private async Task EnviarMensajeAnimado(string mensaje)
         {
