@@ -270,6 +270,12 @@ namespace Chat_ProyectoIG
             string mensajeEnviado = inputBox.Text;
             if (!string.IsNullOrWhiteSpace(inputBox.Text))
             {
+                mensajeEnviado = mensajeEnviado.Replace("\u0001", string.Empty);
+                mensajeEnviado = mensajeEnviado.Replace("\u0002", string.Empty);
+
+                // **NUEVO:** Limpiar otros posibles caracteres de control al principio/final
+                mensajeEnviado = mensajeEnviado.Trim();
+
                 // 1. Sustituir todos los atajos por sus caracteres Unicode
                 foreach (var par in idEmoji)
                 {
@@ -380,141 +386,302 @@ namespace Chat_ProyectoIG
 
 
 
+        /* private void inputBox_TextChanged(object sender, EventArgs e)
+         {
+             // 1. DESACTIVACIÓN
+             inputBox.TextChanged -= inputBox_TextChanged;
+
+             string texto = inputBox.Text;
+             int nuevaPosicionCursor = inputBox.SelectionStart;
+             Color bgColor = inputBox.BackColor;
+             int emojiSize = 18;
+
+             // Variables para la sustitución
+             string atajoEncontrado = null;
+             string rutaImagenEncontrada = null;
+             int indexSustitucion = -1;
+
+             try
+             {
+                 // 2. BÚSQUEDA DEL ATAJO
+                 foreach (var par in imagenEmoji)
+                 {
+                     string atajo = par.Key;
+                     string rutaImagen = par.Value;
+                     int index = -1;
+
+                     if (texto.StartsWith(atajo)) index = 0;
+                     else if (texto.IndexOf(" " + atajo) != -1) index = texto.IndexOf(" " + atajo) + 1;
+
+                     if (index != -1)
+                     {
+                         atajoEncontrado = atajo;
+                         rutaImagenEncontrada = rutaImagen;
+                         indexSustitucion = index;
+                         break; // Solo sustituimos un emoji por evento.
+                     }
+                 }
+
+                 if (atajoEncontrado != null)
+                 {
+                     // 3. PREPARACIÓN
+                     // Reemplazar el atajo por un marcador temporal único para mantener la posición.
+                     string textoMarcado = texto.Remove(indexSustitucion, atajoEncontrado.Length)
+                                               .Insert(indexSustitucion, "#");
+
+                     // Posición inicial del cursor para la reconstrucción
+                     nuevaPosicionCursor = indexSustitucion + 1;
+
+                     Image img = null;
+                     try { img = Image.FromFile(rutaImagenEncontrada); } catch { return; } // Si falla la imagen, salir.
+
+                     // Preparar la imagen para el portapapeles
+                     Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
+                     using (Graphics g = Graphics.FromImage(finalImage))
+                     {
+                         g.Clear(bgColor);
+                         g.DrawImage(img, 0, 0, emojiSize, emojiSize);
+                     }
+                     Clipboard.SetImage(finalImage);
+
+                     // 4. RECONSTRUCCIÓN (Esto elimina el estado corrupto)
+                     inputBox.Clear();
+
+                     int ultimoIndex = 0;
+                     int markerIndex = textoMarcado.IndexOf('#');
+
+                     // 4.1. Insertar texto ANTES del emoji (formato normal)
+                     if (markerIndex > 0)
+                     {
+                         inputBox.SelectedText = textoMarcado.Substring(0, markerIndex);
+                         ultimoIndex = markerIndex;
+                     }
+
+                     // 4.2. Insertar el emoji (IMAGEN)
+                     inputBox.SelectionStart = ultimoIndex;
+                     inputBox.SelectionLength = 0;
+                     inputBox.Paste(); // Pega la imagen
+
+                     // 4.3. Insertar atajo OCULTO y Espacio Amortiguador
+                     inputBox.SelectionStart = ultimoIndex + 1; // Después de la imagen
+                     inputBox.SelectionLength = 0;
+
+                     // Aplicar formato invisible al atajo
+                     inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
+                     inputBox.SelectionColor = bgColor;
+                     inputBox.SelectedText = atajoEncontrado;
+
+                     // Restablecer el formato normal
+                     inputBox.SelectionFont = inputBox.Font;
+                     inputBox.SelectionColor = inputBox.ForeColor;
+
+                     // Insertar el espacio amortiguador (CRÍTICO para la estabilidad del cursor)
+                     inputBox.SelectedText = " ";
+
+                     // Mover el punto de inserción para el texto restante
+                     ultimoIndex += 1 + atajoEncontrado.Length + 1; // 1 (imagen) + atajo + 1 (espacio)
+
+                     // 4.4. Insertar texto DESPUÉS del emoji
+                     if (markerIndex < textoMarcado.Length - 1)
+                     {
+                         string textoRestante = textoMarcado.Substring(markerIndex + 1);
+
+                         // Forzar el formato normal ANTES de insertar el texto restante
+                         inputBox.SelectionStart = ultimoIndex;
+                         inputBox.SelectionLength = 0;
+                         inputBox.SelectionFont = inputBox.Font;
+                         inputBox.SelectionColor = inputBox.ForeColor;
+
+                         inputBox.SelectedText = textoRestante;
+                         ultimoIndex += textoRestante.Length;
+                     }
+
+                     // Limpiar el portapapeles y actualizar el cursor final
+                     Clipboard.Clear();
+                     nuevaPosicionCursor = ultimoIndex; // El cursor final debe ir al final de todo el texto
+                 }
+             }
+             finally
+             {
+                 // 5. RESTAURACIÓN FINAL Y FOCO (Síncrono y forzado)
+                 inputBox.SelectionStart = Math.Min(nuevaPosicionCursor, inputBox.Text.Length);
+                 inputBox.SelectionLength = 0;
+                 inputBox.Focus();
+
+                 // 6. Reactivar el evento
+                 inputBox.TextChanged += inputBox_TextChanged;
+             }
+         }*/
 
 
-        /*  private void inputBox_TextChanged(object sender, EventArgs e)
-          {
-              inputBox.TextChanged -= inputBox_TextChanged;
-
-              string texto = inputBox.Text;
-              int nuevaPosicionCursor = inputBox.SelectionStart;
-              bool reemplazoHecho = false;
-              Color bgColor = inputBox.BackColor;
-              int emojiSize = 18;
-
-              foreach (var par in imagenEmoji)
-              {
-                  string atajo = par.Key;
-                  string rutaImagen = par.Value;
-                  int index = -1;
-
-                  // Lógica de búsqueda del atajo
-                  if (texto.StartsWith(atajo)) index = 0;
-                  else if (texto.IndexOf(" " + atajo) != -1) index = texto.IndexOf(" " + atajo) + 1;
-
-                  if (index != -1)
-                  {
-                      Image img = null;
-                      try { img = Image.FromFile(rutaImagen); } catch { }
-
-                      if (img != null)
-                      {
-                          int lengthToDelete = atajo.Length;
-
-                          // Seleccionar el atajo de texto y no sustituirlo aún
-                          inputBox.SelectionStart = index;
-                          inputBox.SelectionLength = lengthToDelete;
-
-                          // *** Inserción de la Imagen con Fondo Corregido ***
-                          Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
-                          using (Graphics g = Graphics.FromImage(finalImage))
-                          {
-                              g.Clear(bgColor);
-                              g.DrawImage(img, 0, 0, emojiSize, emojiSize);
-                          }
-
-                          // Usamos el portapapeles para insertar la imagen sobre el texto seleccionado
-                          Clipboard.SetImage(finalImage);
-                          inputBox.Paste();
-                          Clipboard.Clear();
-
-                          nuevaPosicionCursor = index + atajo.Length;
-                          reemplazoHecho = true;
-                          break;
-                      }
-                  }
-              }
-
-              inputBox.SelectionStart = Math.Min(nuevaPosicionCursor, inputBox.Text.Length);
-              inputBox.SelectionLength = 0;
-              inputBox.TextChanged += inputBox_TextChanged;
-          }*/
-
-
+        private static bool isAwaitingSubstitution = false;
+        private static bool isReconstructing = false;
+        // Asegúrate de que tu diccionario 'imagenEmoji' esté declarado a nivel de clase también.
         private void inputBox_TextChanged(object sender, EventArgs e)
         {
-            inputBox.TextChanged -= inputBox_TextChanged;
+            // Si estamos reconstruyendo, salimos inmediatamente para evitar recursividad.
+            if (isReconstructing) return;
 
             string texto = inputBox.Text;
-            int nuevaPosicionCursor = inputBox.SelectionStart;
-            Color bgColor = inputBox.BackColor;
-            int emojiSize = 18;
+            isAwaitingSubstitution = false;
 
             foreach (var par in imagenEmoji)
             {
                 string atajo = par.Key;
-                string rutaImagen = par.Value;
+
+                // Buscamos si el atajo está al final y fue la última cosa escrita
                 int index = -1;
-
-                if (texto.StartsWith(atajo)) index = 0;
-                else if (texto.IndexOf(" " + atajo) != -1) index = texto.IndexOf(" " + atajo) + 1;
-
-                if (index != -1)
+                if (texto.Length >= atajo.Length)
                 {
-                    Image img = null;
-                    try { img = Image.FromFile(rutaImagen); } catch { }
+                    if (texto.EndsWith(atajo)) index = texto.Length - atajo.Length;
+                    else if (texto.EndsWith(atajo + " ")) index = texto.Length - atajo.Length - 1; // Para atajos seguidos de un espacio
 
-                    if (img != null)
+                    if (index >= 0)
                     {
-                        // Paso A: Eliminar el atajo de texto y dejar un espacio
-                        inputBox.SelectionStart = index;
-                        inputBox.SelectionLength = atajo.Length;
-                        inputBox.SelectedText = " "; // Se reemplaza el atajo por un espacio
-
-                        // Paso B: Insertar la imagen sobre el espacio
-                        Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
-                        using (Graphics g = Graphics.FromImage(finalImage))
+                        // Aseguramos que haya un espacio antes, o que esté al inicio del texto.
+                        if (index == 0 || texto[index - 1] == ' ')
                         {
-                            g.Clear(bgColor);
-                            g.DrawImage(img, 0, 0, emojiSize, emojiSize);
+                            isAwaitingSubstitution = true; // El emoji está listo para ser sustituido
+                            break;
                         }
-
-                        // Cursor al inicio del espacio
-                        inputBox.SelectionStart = index;
-                        inputBox.SelectionLength = 1; // Selecciona el espacio
-
-                        Clipboard.SetImage(finalImage);
-                        inputBox.Paste(); // La imagen se pega sobre el espacio.
-                        Clipboard.Clear();
-
-                        // Paso C: Insertar el atajo de texto REAL (¡para enviarlo!)
-                        // El atajo de texto se inserta inmediatamente después de la imagen.
-
-                        inputBox.SelectionStart = index + 1; // Posición después de la imagen
-                        inputBox.SelectionLength = 0;
-
-                        // Aplicar formato invisible (fuente pequeña y color de fondo)
-                        inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
-                        inputBox.SelectionColor = bgColor;
-
-                        // Insertar el atajo de texto REAL (ej: ":smile:")
-                        inputBox.SelectedText = atajo;
-
-                        // Restablecer el formato normal para el texto que sigue
-                        inputBox.SelectionFont = inputBox.Font;
-                        inputBox.SelectionColor = inputBox.ForeColor;
-
-                        // El nuevo cursor debe saltar la imagen y el atajo oculto
-                        nuevaPosicionCursor = index + 1 + atajo.Length;
-                        break;
                     }
                 }
             }
-
-            inputBox.SelectionStart = Math.Min(nuevaPosicionCursor, inputBox.Text.Length);
-            inputBox.SelectionLength = 0;
-            inputBox.TextChanged += inputBox_TextChanged;
+            ResaltarMenciones();
         }
+        private void inputBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Solo actuamos si se está esperando una sustitución y la tecla es un espacio o un Enter.
+            if (!isAwaitingSubstitution) return;
+
+            if (e.KeyChar == ' ' || e.KeyChar == (char)Keys.Enter)
+            {
+                // Consumir la tecla para que no se inserte en el texto.
+                e.Handled = true;
+                isAwaitingSubstitution = false; // Bajamos la bandera
+
+                // Ejecutamos la sustitución y reconstrucción en el método auxiliar.
+                SustituirEmojiYReconstruir(e.KeyChar);
+            }
+        }
+
+        private void SustituirEmojiYReconstruir(char teclaDisparo)
+        {
+            isReconstructing = true;
+
+            string texto = inputBox.Text;
+            Color bgColor = inputBox.BackColor;
+            int emojiSize = 18;
+
+            string atajoEncontrado = null;
+            string rutaImagenEncontrada = null;
+            int indexSustitucion = -1;
+
+            try
+            {
+                // 1. RE-BUSCAMOS el atajo final
+                foreach (var par in imagenEmoji)
+                {
+                    string atajo = par.Key;
+                    string rutaImagen = par.Value;
+
+                    if (texto.EndsWith(atajo))
+                    {
+                        indexSustitucion = texto.Length - atajo.Length;
+
+                        if (indexSustitucion == 0 || texto[indexSustitucion - 1] == ' ')
+                        {
+                            atajoEncontrado = atajo;
+                            rutaImagenEncontrada = rutaImagen;
+                            break;
+                        }
+                    }
+                }
+
+                if (atajoEncontrado != null)
+                {
+                    // 2. PREPARACIÓN DE LA IMAGEN
+                    Image img = null;
+                    try { img = Image.FromFile(rutaImagenEncontrada); } catch { return; }
+
+                    Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
+                    using (Graphics g = Graphics.FromImage(finalImage))
+                    {
+                        g.Clear(bgColor);
+                        g.DrawImage(img, 0, 0, emojiSize, emojiSize);
+                    }
+
+                    Clipboard.SetImage(finalImage);
+
+                    // 3. SUSTITUCIÓN ASÍNCRONA (CRÍTICO)
+
+                    // CRÍTICO 1: Forzar el foco antes de BeginInvoke
+                    inputBox.Focus();
+
+                    // Usamos BeginInvoke para garantizar que la operación de pegar ocurra después de que
+                    // el control haya terminado de procesar KeyPress.
+                    inputBox.BeginInvoke(new Action(() =>
+                    {
+                        // Aseguramos que el control aún tiene el foco
+                        inputBox.Focus();
+
+                        // 3.1. Seleccionar el atajo COMPLETO para que la imagen lo reemplace
+                        inputBox.SelectionStart = indexSustitucion;
+                        inputBox.SelectionLength = atajoEncontrado.Length;
+
+                        // Reemplazar atajo con la imagen (la imagen toma 1 posición)
+                        inputBox.Paste();
+
+                        // 3.2. INSERCIÓN DEL ATAJO OCULTO Y LA TECLA DE DISPARO
+
+                        int ultimoIndex = indexSustitucion + 1; // Índice después de la imagen
+
+                        // Insertar atajo OCULTO
+                        inputBox.SelectionStart = ultimoIndex;
+                        inputBox.SelectionLength = 0;
+
+                        inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
+                        inputBox.SelectionColor = bgColor;
+                        inputBox.SelectedText = atajoEncontrado;
+
+                        // Restablecer formato normal
+                        inputBox.SelectionFont = inputBox.Font;
+                        inputBox.SelectionColor = inputBox.ForeColor;
+
+                        ultimoIndex += atajoEncontrado.Length;
+
+                        // Insertar la tecla que disparó el evento (Espacio o Enter)
+                        inputBox.SelectionStart = ultimoIndex;
+                        inputBox.SelectionLength = 0;
+                        inputBox.SelectedText = teclaDisparo.ToString();
+                        ultimoIndex += 1;
+
+                        Clipboard.Clear();
+
+                        // RESTAURACIÓN FINAL DENTRO DEL INVOKE
+                        inputBox.SelectionStart = ultimoIndex;
+                        inputBox.SelectionLength = 0;
+                        inputBox.Focus();
+
+                        // Permitimos que TextChanged vuelva a funcionar.
+                        isReconstructing = false;
+                    }));
+
+                    // 🚨 Importante: Salir del método principal, la lógica continúa en el BeginInvoke.
+                    return;
+                }
+            }
+            finally
+            {
+                // Si no se encontró el atajo (if (atajoEncontrado != null) fue false), 
+                // desactivamos la bandera aquí. Si se encontró, se desactiva dentro del BeginInvoke.
+                if (atajoEncontrado == null)
+                {
+                    isReconstructing = false;
+                }
+            }
+        }
+
 
 
         private void emoji_Click(object sender, EventArgs e)
@@ -630,21 +797,60 @@ namespace Chat_ProyectoIG
         {
             btn.Click += (s, e) =>
             {
-                // La clave del diccionario debe estar en el Tag del botón
-                if (imagenEmoji.TryGetValue(btn.Tag.ToString(), out string rutaImagen))
+                string atajo = btn.Tag.ToString(); // Obtiene el atajo (ej: ":smile:")
+
+                if (imagenEmoji.TryGetValue(atajo, out string rutaImagen))
                 {
                     Image img = null;
-                    try
-                    {
-                        img = Image.FromFile(rutaImagen);
+                    try { img = Image.FromFile(rutaImagen); } catch { return; }
 
-                        // Insertar la imagen
-                        Image resizedImage = new Bitmap(img, 18, 18);
-                        Clipboard.SetImage(resizedImage);
-                        inputBox.Paste();
-                        Clipboard.Clear();
+                    // Variables de estilo
+                    Color bgColor = inputBox.BackColor;
+                    int emojiSize = 18;
+
+                    // --- 1. Preparar la Imagen ---
+                    Bitmap finalImage = new Bitmap(emojiSize, emojiSize);
+                    using (Graphics g = Graphics.FromImage(finalImage))
+                    {
+                        g.Clear(bgColor);
+                        g.DrawImage(img, 0, 0, emojiSize, emojiSize);
                     }
-                    catch { }
+
+                    // --- 2. Insertar la IMAGEN Visible ---
+                    int originalStart = inputBox.SelectionStart;
+                    inputBox.SelectionLength = 0;
+                    inputBox.SelectedText = " "; // Insertar un espacio
+
+                    inputBox.SelectionStart = originalStart;
+                    inputBox.SelectionLength = 1; // Seleccionar el espacio
+
+                    Clipboard.SetImage(finalImage);
+                    inputBox.Paste(); // La imagen se pega
+                    Clipboard.Clear();
+
+                    // --- 3. Insertar el ATAJO DE TEXTO OCULTO CON MARCADORES ---
+
+                    // Posición después de la imagen (la imagen ocupa 1 carácter invisible)
+                    int index = originalStart + 1;
+                    inputBox.SelectionStart = index;
+                    inputBox.SelectionLength = 0;
+
+                    // 🚨 CAMBIO CLAVE: Envuelve el atajo con marcadores de aislamiento
+                    string atajoMarcado = "\u0001" + atajo + "\u0002"; // Ejemplo: "\u0001:smile:\u0002"
+
+                    // Aplicar formato para ocultar el texto
+                    inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
+                    inputBox.SelectionColor = bgColor; // Mismo color que el fondo
+
+                    // Insertar la cadena marcada
+                    inputBox.SelectedText = atajoMarcado;
+
+                    // Restablecer el formato normal para el texto que sigue
+                    inputBox.SelectionFont = inputBox.Font;
+                    inputBox.SelectionColor = inputBox.ForeColor;
+
+                    // Mover el cursor al final de la inserción
+                    inputBox.SelectionStart = index + atajoMarcado.Length;
                 }
 
                 generarEmojis.Visible = false;
@@ -697,38 +903,111 @@ namespace Chat_ProyectoIG
 
         }
 
+        /*   private void ResaltarMenciones()
+           {
+               int cursorPos = inputBox.SelectionStart;
+               string texto = inputBox.Text;
+
+               // Guardar el texto plano sin formato
+               inputBox.TextChanged -= inputBox_TextChanged; // Evitar bucle de eventos
+               inputBox.Text = texto;
+               inputBox.SelectAll();
+               inputBox.SelectionColor = Color.White;
+               inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Regular);
+               inputBox.DeselectAll();
+
+               foreach (string usuario in memberList.Items)
+               {
+                   string patron = "@" + usuario;
+                   int index = texto.IndexOf(patron);
+
+                   while (index != -1)
+                   {
+                       inputBox.Select(index, patron.Length);
+                       inputBox.SelectionColor = Color.LightSkyBlue; // Azul celeste
+                       inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Italic);
+
+                       index = texto.IndexOf(patron, index + patron.Length);
+                   }
+               }
+
+               inputBox.SelectionStart = cursorPos;
+               inputBox.SelectionLength = 0;
+               inputBox.TextChanged += inputBox_TextChanged; // Restaurar evento
+           }*/
+
+
         private void ResaltarMenciones()
         {
-            int cursorPos = inputBox.SelectionStart;
+            // CRÍTICO: No ejecutar mientras el emoji se está procesando.
+            if (isReconstructing) return;
+
+            // Guardamos la posición del cursor
+            int cursorPosition = inputBox.SelectionStart;
             string texto = inputBox.Text;
 
-            // Guardar el texto plano sin formato
-            inputBox.TextChanged -= inputBox_TextChanged; // Evitar bucle de eventos
-            inputBox.Text = texto;
-            inputBox.SelectAll();
-            inputBox.SelectionColor = Color.White;
-            inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Regular);
-            inputBox.DeselectAll();
+            // Desactivamos el evento TextChanged para evitar recursión.
+            inputBox.TextChanged -= inputBox_TextChanged;
 
-            foreach (string usuario in memberList.Items)
+            try
             {
-                string patron = "@" + usuario;
-                int index = texto.IndexOf(patron);
+                // NO HAREMOS LIMPIEZA TOTAL PARA NO ROMPER EL EMOJI OCULTO.
 
-                while (index != -1)
+                int startIndex = 0;
+
+                while (startIndex < texto.Length)
                 {
-                    inputBox.Select(index, patron.Length);
-                    inputBox.SelectionColor = Color.LightSkyBlue; // Azul celeste
-                    inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Italic);
+                    // 1. Busca el '@'
+                    int mencionesIndex = texto.IndexOf('@', startIndex);
 
-                    index = texto.IndexOf(patron, index + patron.Length);
+                    if (mencionesIndex == -1) break;
+
+                    // 2. Busca el final de la palabra
+                    int endIndex = texto.IndexOf(' ', mencionesIndex);
+                    if (endIndex == -1) endIndex = texto.Length;
+
+                    // Solo resaltamos si hay caracteres después del '@' (ej. @a vs @)
+                    if (endIndex > mencionesIndex + 1)
+                    {
+                        int length = endIndex - mencionesIndex;
+
+                        // 3. Aplicar el formato de mención
+                        inputBox.SelectionStart = mencionesIndex;
+                        inputBox.SelectionLength = length;
+
+                        inputBox.SelectionColor = Color.LightBlue; // Color de mención
+                        inputBox.SelectionFont = new Font(inputBox.Font.Name, inputBox.Font.Size, FontStyle.Bold);
+
+                        // Mover el punto de inicio para la próxima búsqueda
+                        startIndex = endIndex;
+                    }
+                    else
+                    {
+                        // Si solo encontramos '@' sin texto, pasamos al siguiente carácter.
+                        startIndex = mencionesIndex + 1;
+                    }
                 }
-            }
 
-            inputBox.SelectionStart = cursorPos;
-            inputBox.SelectionLength = 0;
-            inputBox.TextChanged += inputBox_TextChanged; // Restaurar evento
+                // 🚨 CAMBIO CLAVE: Reasegurar el formato de la posición actual del cursor 🚨
+                // Esto previene que las menciones afecten lo que se escribe después.
+                inputBox.SelectionStart = texto.Length;
+                inputBox.SelectionLength = 0;
+                inputBox.SelectionColor = inputBox.ForeColor;
+                inputBox.SelectionFont = inputBox.Font;
+            }
+            finally
+            {
+                // Restaurar el cursor y reactivar eventos
+                inputBox.SelectionStart = Math.Min(cursorPosition, inputBox.Text.Length);
+                inputBox.SelectionLength = 0;
+                inputBox.Focus();
+
+                inputBox.TextChanged += inputBox_TextChanged;
+            }
         }
+
+
+
 
         private void memberList_SelectedIndexChanged_1(object sender, EventArgs e)
         {
