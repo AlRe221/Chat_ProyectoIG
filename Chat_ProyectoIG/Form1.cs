@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
 using MySql.Data.MySqlClient;
+using System.Net;
+using System.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace Chat_ProyectoIG
 {
@@ -23,6 +26,9 @@ namespace Chat_ProyectoIG
         FlowLayoutPanel paraAnimalitos = new FlowLayoutPanel();
         FlowLayoutPanel paraComida = new FlowLayoutPanel();
         FlowLayoutPanel paraVarios = new FlowLayoutPanel();
+
+        //conexión de cliente 
+        private TcpClient tcpCliente;
 
         //cadena de conexión
         string connectionString = "server=127.0.0.1;uid=root;pwd=angelito_1422;database=chat";
@@ -255,6 +261,11 @@ namespace Chat_ProyectoIG
             CargarUsuariosDesdeBD(); // Nuevo método
             CargarGruposDesdeBD();   // Nuevo método
             CargarMensajes();        // Método mejorado
+
+
+            //Implementación Servidor - Cliente
+
+            _ = Task.Run(() => conexionClienteServidor());
 
         }
         ContextMenuStrip menuUsuario = new ContextMenuStrip();
@@ -661,7 +672,7 @@ namespace Chat_ProyectoIG
             }
             catch (FileNotFoundException ex)
             {
-
+                MessageBox.Show($"ERROR AL GENERAR IMAGEN {ex}");
             }
 
             boton_click(btn);
@@ -1589,5 +1600,36 @@ namespace Chat_ProyectoIG
                 MessageBox.Show("Error al guardar mensaje: " + ex.Message);
             }
         }
+
+        private async Task conexionClienteServidor()
+        {
+            string serverIP = "127.0.0.1"; //se modificará al estar en la universidad, por el momneto se probará la conexión local para asegurar
+                                           // de que lo implementado funciona. 
+                                           // El IP se modificara con el de la uni y, cada integrante modificará esta línea manualmente
+                                           // con el fin de no generar inestabilidad en el programa.
+            int serverPort = 13000; 
+            //Debe contar con el mismo puerto de conexión que el servidor. 
+
+            try
+            {
+                this.tcpCliente = new TcpClient();
+                await this.tcpCliente.ConnectAsync(serverIP, serverPort); //no puede pasar a la siguiente linea hasta que se conecte asincronamente.
+
+                MessageBox.Show("Conexión exitosa!"); //oculpar - borrar linea una vez comprobemos que todo funciona adecuadamente
+
+                //crar un metodo que, reciba el .json o al cliente y actualizar los mensajes. 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ERROR {ex} ");
+
+            }
+        }
+
+
+       
+
+
+
     }
 }

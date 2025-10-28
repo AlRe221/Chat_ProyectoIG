@@ -3,11 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F0D749DB-F82A-4D23-B796-A10C1335DE04}|Servidor1\\Servidor1.csproj|c:\\users\\rilex\\onedrive\\escritorio\\chatproyectoig\\chat_proyectoig\\servidor1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F0D749DB-F82A-4D23-B796-A10C1335DE04}|Servidor1\\Servidor1.csproj|solutionrelative:servidor1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|c:\\users\\rilex\\onedrive\\escritorio\\chatproyectoig\\chat_proyectoig\\chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -15,8 +11,8 @@
       "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{F0D749DB-F82A-4D23-B796-A10C1335DE04}|Servidor1\\Servidor1.csproj|c:\\users\\rilex\\onedrive\\escritorio\\chatproyectoig\\chat_proyectoig\\servidor1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0D749DB-F82A-4D23-B796-A10C1335DE04}|Servidor1\\Servidor1.csproj|solutionrelative:servidor1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,6 +21,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|c:\\users\\rilex\\onedrive\\escritorio\\chatproyectoig\\chat_proyectoig\\chat_proyectoig\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{CE1BBACC-4A2B-48C4-B47F-55D98160D083}|Chat_ProyectoIG\\Chat_ProyectoIG.csproj|solutionrelative:chat_proyectoig\\form3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,33 +38,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
               "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
               "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
               "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs",
-              "ViewState": "AgIAAOEEAAAAAAAAAAAgwLYEAABGAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABsAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-22T22:39:41.97Z",
               "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Servidor1\\Program.cs",
-              "RelativeDocumentMoniker": "Servidor1\\Program.cs",
-              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Servidor1\\Program.cs",
-              "RelativeToolTip": "Servidor1\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T17:11:15.183Z",
               "EditorCaption": ""
             },
             {
@@ -72,12 +63,46 @@
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Servidor1\\Program.cs",
+              "RelativeDocumentMoniker": "Servidor1\\Program.cs",
+              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Servidor1\\Program.cs",
+              "RelativeToolTip": "Servidor1\\Program.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAiwDIAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T17:11:15.183Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
+              "Title": "Form1.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
+              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-22T22:39:26.124Z",
+              "EditorCaption": " [Dise\u00F1o]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Program.cs",
+              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Program.cs",
+              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Program.cs",
+              "RelativeToolTip": "Chat_ProyectoIG\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T17:49:47.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.Designer.cs",
@@ -90,7 +115,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "Form3.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form3.cs",
               "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form3.cs",
@@ -102,7 +127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "Form2.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form2.cs",
               "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form2.cs",
@@ -110,18 +135,6 @@
               "RelativeToolTip": "Chat_ProyectoIG\\Form2.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-22T23:57:31.889Z",
-              "EditorCaption": " [Dise\u00F1o]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Form1.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs",
-              "RelativeDocumentMoniker": "Chat_ProyectoIG\\Form1.cs",
-              "ToolTip": "C:\\Users\\rilex\\OneDrive\\Escritorio\\ChatProyectoIG\\Chat_ProyectoIG\\Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Chat_ProyectoIG\\Form1.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T22:39:26.124Z",
               "EditorCaption": " [Dise\u00F1o]"
             }
           ]
