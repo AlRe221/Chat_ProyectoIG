@@ -1,4 +1,6 @@
-﻿namespace Chat_ProyectoIG
+﻿using System.Drawing;
+
+namespace Chat_ProyectoIG
 {
     partial class Form1
     {
@@ -93,8 +95,8 @@
             // emoji
             // 
             this.emoji.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.emoji.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("emoji.BackgroundImage")));
-            this.emoji.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.emoji.Font = new Font("Segoe UI Emoji",400,FontStyle.Bold);
+            this.emoji.Text = ":)";
             this.emoji.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.emoji.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.emoji.ForeColor = System.Drawing.SystemColors.ControlLightLight;
