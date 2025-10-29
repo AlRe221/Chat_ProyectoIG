@@ -17,7 +17,16 @@ using Newtonsoft.Json;
 
 namespace Chat_ProyectoIG
 {
-   
+
+    public class MensajeChat
+    {
+        public string Tipo { get; set; }
+        public string Remitente { get; set; }
+        public string Destinatario { get; set; }
+        public string Grupo { get; set; }
+        public string Contenido { get; set; }
+        public DateTime Fecha { get; set; }
+    }
 
     public partial class Form1 : MaterialForm
     {
@@ -29,9 +38,11 @@ namespace Chat_ProyectoIG
 
         //conexión de cliente 
         private TcpClient tcpCliente;
+        private NetworkStream serverStream;
+        private bool servidorConectado = false;
 
         //cadena de conexión
-        string connectionString = "server=127.0.0.1;uid=root;pwd=angelito_1422;database=chat";
+        string connectionString = Config.ConnectionString;
         public string UsuarioActual { get; set; }
         public int UsuarioActualId { get; set; }
 
@@ -274,6 +285,163 @@ namespace Chat_ProyectoIG
         int pasoOpacidad = 10;
         bool ocultarPaneles = false;
 
+        #region Métodos de Conexión Servidor
+
+        private async Task conexionClienteServidor()
+        {
+            string serverIP = Config.ChatServer;
+            int serverPort = Config.ChatPort;
+
+            try
+            {
+                this.tcpCliente = new TcpClient();
+                await this.tcpCliente.ConnectAsync(serverIP, serverPort);
+                serverStream = tcpCliente.GetStream();
+                servidorConectado = true;
+
+                // Enviar mensaje de login al servidor
+                await EnviarLoginAlServidor();
+
+                // Iniciar escucha de mensajes del servidor
+                _ = Task.Run(() => EscucharServidor());
+
+                // Mostrar mensaje en el chat
+                this.Invoke(new Action(() =>
+                {
+                    chatBox.Items.Add("✓ Conectado al servidor");
+                    chatBox.TopIndex = chatBox.Items.Count - 1;
+                }));
+            }
+            catch (Exception ex)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    MessageBox.Show($"Error conectando al servidor: {ex.Message}");
+                }));
+            }
+        }
+
+        private async Task EnviarLoginAlServidor()
+        {
+            if (!servidorConectado) return;
+
+            try
+            {
+                var mensajeLogin = new
+                {
+                    Tipo = "login",
+                    Remitente = UsuarioActual,
+                    Destinatario = (string)null,
+                    Grupo = (string)null,
+                    Contenido = "Conectándose al chat",
+                    Fecha = DateTime.Now
+                };
+
+                string json = JsonConvert.SerializeObject(mensajeLogin);
+                byte[] buffer = Encoding.UTF8.GetBytes(json);
+                await serverStream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error enviando login: {ex.Message}");
+            }
+        }
+
+        private async Task EscucharServidor()
+        {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            try
+            {
+                while (servidorConectado && (bytesRead = await serverStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                {
+                    string mensajeJson = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
+                    this.Invoke(new Action(() =>
+                    {
+                        ProcesarMensajeRecibido(mensajeJson);
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    chatBox.Items.Add($"✗ Error de conexión con el servidor: {ex.Message}");
+                    servidorConectado = false;
+                }));
+            }
+        }
+
+        private void ProcesarMensajeRecibido(string mensajeJson)
+        {
+            try
+            {
+                var mensaje = JsonConvert.DeserializeObject<MensajeChat>(mensajeJson);
+
+                switch (mensaje.Tipo)
+                {
+                    case "publico":
+                    case "grupo":
+                        chatBox.Items.Add($"{mensaje.Remitente}: {mensaje.Contenido}");
+                        break;
+                    case "privado":
+                        chatBox.Items.Add($"[Privado] {mensaje.Remitente}: {mensaje.Contenido}");
+                        break;
+                    case "usuario_conectado":
+                    case "usuario_desconectado":
+                        chatBox.Items.Add($"⚡ {mensaje.Contenido}");
+                        break;
+                    case "error":
+                        chatBox.Items.Add($"❌ {mensaje.Contenido}");
+                        break;
+                    case "login_confirmado":
+                        chatBox.Items.Add($"✓ {mensaje.Contenido}");
+                        break;
+                }
+
+                // Scroll al final
+                chatBox.TopIndex = chatBox.Items.Count - 1;
+            }
+            catch (Exception ex)
+            {
+                chatBox.Items.Add($"Error procesando mensaje: {ex.Message}");
+            }
+        }
+
+        private async Task EnviarMensajeAlServidor(string tipo, string destinatario, string grupo, string contenido)
+        {
+            if (!servidorConectado || tcpCliente?.Connected != true)
+            {
+                MessageBox.Show("No hay conexión con el servidor");
+                return;
+            }
+
+            try
+            {
+                var mensaje = new
+                {
+                    Tipo = tipo,
+                    Remitente = UsuarioActual,
+                    Destinatario = destinatario,
+                    Grupo = grupo,
+                    Contenido = contenido,
+                    Fecha = DateTime.Now
+                };
+
+                string json = JsonConvert.SerializeObject(mensaje);
+                byte[] buffer = Encoding.UTF8.GetBytes(json);
+                await serverStream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error enviando mensaje: {ex.Message}");
+            }
+        }
+
+        #endregion
+
 
         // Send chat message
         private async void SendButton_Click(object sender, EventArgs e)
@@ -295,6 +463,7 @@ namespace Chat_ProyectoIG
                 }
                 await EnviarMensajeAnimado($"{UsuarioActual}: {mensajeEnviado}");
                 GuardarMensajeEnBD(null, null, mensajeEnviado); // Mensaje general
+                await EnviarMensajeAlServidor("publico", null, null, mensajeEnviado);
                 inputBox.Clear();
             }
         }
@@ -394,11 +563,6 @@ namespace Chat_ProyectoIG
         {
 
         }
-
-
-
-        
-
 
         private static bool isAwaitingSubstitution = false;
         private static bool isReconstructing = false;
@@ -1133,6 +1297,8 @@ namespace Chat_ProyectoIG
             // Enviar y guardar
             await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensajeEnviado}");
             GuardarMensajeEnBD(destinatario, null, mensajeEnviado);
+            //Enviar al servidor
+            await EnviarMensajeAlServidor("privado", destinatario, null, mensajeEnviado);
 
             inputBox.Clear();
         }
@@ -1234,7 +1400,8 @@ namespace Chat_ProyectoIG
             // 3. Enviar y guardar
             await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensajeEnviado}");
             GuardarMensajeEnBD(null, grupo, mensajeEnviado); // El mensaje general a grupo usa el grupo como segundo parámetro
-
+            //Enviar al servidor
+            await EnviarMensajeAlServidor("grupo", null, grupo, mensajeEnviado);
             inputBox.Clear();
         }
 
@@ -1601,7 +1768,7 @@ namespace Chat_ProyectoIG
             }
         }
 
-        private async Task conexionClienteServidor()
+        /*private async Task conexionClienteServidor()
         {
             string serverIP = "127.0.0.1"; //se modificará al estar en la universidad, por el momneto se probará la conexión local para asegurar
                                            // de que lo implementado funciona. 
@@ -1624,12 +1791,6 @@ namespace Chat_ProyectoIG
                 MessageBox.Show($"ERROR {ex} ");
 
             }
-        }
-
-
-       
-
-
-
+        }*/
     }
 }

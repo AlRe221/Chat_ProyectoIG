@@ -25,7 +25,7 @@ namespace Chat_ProyectoIG
 
             try
             {
-                using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=angelito_1422;database=chat"))
+                using (MySqlConnection conn = new MySqlConnection(Config.ConnectionString))
                 {
                     conn.Open();
 
