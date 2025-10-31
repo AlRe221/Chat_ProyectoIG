@@ -36,14 +36,19 @@ namespace Servidor1
                 tcpList = new TcpListener(ipAddress, Config.ChatPort);
                 tcpList.Start();
 
-                Console.WriteLine($"Servidor inicializado y escuchando en puerto {Config.ChatPort}.");
+                Console.WriteLine($"✅ Servidor escuchando en:");
+                Console.WriteLine($"   - Local: 127.0.0.1:{Config.ChatPort}");
+                Console.WriteLine($"   - Red: {GetLocalIPAddress()}:{Config.ChatPort}");
+                Console.WriteLine($"   - Todos: 0.0.0.0:{Config.ChatPort}");
                 Console.WriteLine("Esperando conexiones de clientes...");
-                Console.WriteLine("Presiona Ctrl+C para detener el servidor.");
 
                 while (true)
                 {
                     TcpClient cliente = tcpList.AcceptTcpClient();
-                    Console.WriteLine("Nuevo cliente conectado!");
+
+                    // Mostrar información del cliente conectado
+                    string clientIP = ((IPEndPoint)cliente.Client.RemoteEndPoint).Address.ToString();
+                    Console.WriteLine($"🔗 Cliente conectado desde: {clientIP}");
 
                     Thread clientThread = new Thread(() => ManejarCliente(cliente));
                     clientThread.IsBackground = true;
@@ -317,6 +322,20 @@ namespace Servidor1
             {
                 Console.WriteLine($"Error guardando mensaje en BD: {ex.Message}");
             }
+        }
+
+        // Método para obtener la IP local
+        private static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return "No se pudo determinar la IP";
         }
     }
 }
