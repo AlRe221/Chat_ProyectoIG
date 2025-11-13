@@ -462,7 +462,7 @@ namespace Chat_ProyectoIG
                     mensajeEnviado = mensajeEnviado.Replace(par.Key, par.Value);
                 }
                 await EnviarMensajeAnimado($"{UsuarioActual}: {mensajeEnviado}");
-                GuardarMensajeEnBD(null, null, mensajeEnviado); // Mensaje general
+                //GuardarMensajeEnBD(null, null, mensajeEnviado); // Mensaje general
                 await EnviarMensajeAlServidor("publico", null, null, mensajeEnviado);
                 inputBox.Clear();
             }
@@ -1296,7 +1296,7 @@ namespace Chat_ProyectoIG
 
             // Enviar y guardar
             await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensajeEnviado}");
-            GuardarMensajeEnBD(destinatario, null, mensajeEnviado);
+            //GuardarMensajeEnBD(destinatario, null, mensajeEnviado);
             //Enviar al servidor
             await EnviarMensajeAlServidor("privado", destinatario, null, mensajeEnviado);
 
@@ -1399,7 +1399,7 @@ namespace Chat_ProyectoIG
 
             // 3. Enviar y guardar
             await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensajeEnviado}");
-            GuardarMensajeEnBD(null, grupo, mensajeEnviado); // El mensaje general a grupo usa el grupo como segundo parámetro
+            //GuardarMensajeEnBD(null, grupo, mensajeEnviado); // El mensaje general a grupo usa el grupo como segundo parámetro
             //Enviar al servidor
             await EnviarMensajeAlServidor("grupo", null, grupo, mensajeEnviado);
             inputBox.Clear();
