@@ -9,8 +9,8 @@ namespace Chat_ProyectoIG
     public static class Config
     {
         // ⚠️ CAMBIAR POR LA IP DE LA LAPTOP SERVIDOR
-        public static string DatabaseServer = "192.168.0.157";
-        public static string ChatServer = "192.168.0.157";
+        public static string DatabaseServer = "10.103.151.2";
+        public static string ChatServer = "10.103.151.2";
         public static int ChatPort = 13000;
 
         public static string DbUser = "cliente";

@@ -395,6 +395,7 @@ namespace Chat_ProyectoIG
                         case "publico":
                         case "grupo":
                             chatBox.Items.Add($"{mensaje.Remitente}: {mensaje.Contenido}");
+                            CargarGruposDesdeBD();
                             break;
                         case "privado":
                             chatBox.Items.Add($"[Privado] {mensaje.Remitente}: {mensaje.Contenido}");

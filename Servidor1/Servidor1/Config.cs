@@ -12,7 +12,7 @@ namespace Servidor1
         public static int ChatPort = 13000;
 
         // Configuración de la base de datos
-        public static string DatabaseServer = "192.168.0.157";
+        public static string DatabaseServer = "10.103.151.2";
         public static string DbUser = "cliente";
         public static string DbPassword = "57057goku75@jua57";
         public static string DbName = "chat_usuario";
