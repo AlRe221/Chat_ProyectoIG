@@ -285,6 +285,16 @@ namespace Servidor1
             }
 
             Console.WriteLine($"Mensaje de grupo '{mensaje.Grupo}' de '{mensaje.Remitente}' reenviado.");
+
+            var notificacionActualizacion = new MensajeChat
+            {
+                Tipo = "actualizar_grupos",
+                Remitente = "Servidor",
+                Contenido = "Se ha creado un nuevo grupo",
+                Fecha = DateTime.Now
+            };
+
+            ReenviarATodos(notificacionActualizacion, null);
         }
 
         static void EnviarMensajeACliente(TcpClient cliente, MensajeChat mensaje)
@@ -313,7 +323,7 @@ namespace Servidor1
                 {
                     conn.Open();
                     string query = @"INSERT INTO mensajes (remitente, destinatario, grupo, mensaje) 
-                             VALUES (@remitente, @destinatario, @grupo, @mensaje)";
+                     VALUES (@remitente, @destinatario, @grupo, @mensaje)";
 
                     var cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@remitente", mensaje.Remitente);
@@ -324,6 +334,19 @@ namespace Servidor1
                     cmd.Parameters.AddWithValue("@mensaje", mensaje.Contenido);
 
                     cmd.ExecuteNonQuery();
+
+                    if (!string.IsNullOrEmpty(mensaje.Grupo))
+                    {
+                        var notificacion = new MensajeChat
+                        {
+                            Tipo = "actualizar_grupos",
+                            Remitente = "Servidor",
+                            Contenido = $"Nuevo mensaje en grupo: {mensaje.Grupo}",
+                            Fecha = DateTime.Now
+                        };
+                        Thread.Sleep(100);
+                        ReenviarATodos(notificacion, null);
+                    }
                 }
             }
             catch (Exception ex)

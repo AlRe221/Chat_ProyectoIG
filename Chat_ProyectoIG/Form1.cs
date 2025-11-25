@@ -403,14 +403,16 @@ namespace Chat_ProyectoIG
                         case "usuario_conectado":
                         case "usuario_desconectado":
                             chatBox.Items.Add($"⚡ {mensaje.Contenido}");
-                            // Actualizar lista de usuarios cuando alguien se conecta/desconecta
-                            CargarUsuariosDesdeBD();
+                            CargarUsuariosDesdeBD(); // Actualizar lista de usuarios
                             break;
                         case "error":
                             chatBox.Items.Add($"❌ {mensaje.Contenido}");
                             break;
                         case "login_confirmado":
                             chatBox.Items.Add($"✓ {mensaje.Contenido}");
+                            break;
+                        case "actualizar_grupos": 
+                            CargarGruposDesdeBD();
                             break;
                         default:
                             ProcesarComoMensajeSistema(mensajeJson);
