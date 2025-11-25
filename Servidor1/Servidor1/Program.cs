@@ -21,6 +21,13 @@ namespace Servidor1
         public DateTime Fecha { get; set; }
     }
 
+    public class MensajeSistema
+    {
+        public string Tipo { get; set; } // "actualizar_usuarios", "actualizar_grupos"
+        public string Contenido { get; set; }
+        public DateTime Fecha { get; set; }
+    }
+
     internal class Program
     {
         static TcpListener tcpList = null;
@@ -338,5 +345,56 @@ namespace Servidor1
             }
             return "No se pudo determinar la IP";
         }
+
+        static void NotificarActualizacionUsuarios()
+        {
+            var mensaje = new MensajeSistema
+            {
+                Tipo = "actualizar_usuarios",
+                Contenido = "", // Vacío para que no muestre notificación
+                Fecha = DateTime.Now
+            };
+
+            ReenviarMensajeSistemaATodos(mensaje);
+        }
+
+        static void NotificarActualizacionGrupos()
+        {
+            var mensaje = new MensajeSistema
+            {
+                Tipo = "actualizar_grupos",
+                Contenido = "", // Vacío para que no muestre notificación
+                Fecha = DateTime.Now
+            };
+
+            ReenviarMensajeSistemaATodos(mensaje);
+        }
+
+        static void ReenviarMensajeSistemaATodos(MensajeSistema mensaje)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(mensaje));
+
+            lock (lockObject)
+            {
+                foreach (var cliente in clientesConectados.ToList())
+                {
+                    if (cliente.Connected)
+                    {
+                        try
+                        {
+                            NetworkStream stream = cliente.GetStream();
+                            stream.Write(buffer, 0, buffer.Length);
+                        }
+                        catch
+                        {
+                            // Cliente desconectado
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine($"Notificación de sistema enviada a {clientesConectados.Count} clientes.");
+        }
     }
+
 }

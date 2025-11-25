@@ -28,6 +28,13 @@ namespace Chat_ProyectoIG
         public DateTime Fecha { get; set; }
     }
 
+    public class MensajeSistema
+    {
+        public string Tipo { get; set; }
+        public string Contenido { get; set; }
+        public DateTime Fecha { get; set; }
+    }
+
     public partial class Form1 : MaterialForm
     {
         TabControl generarEmojis = new TabControl();
@@ -378,27 +385,41 @@ namespace Chat_ProyectoIG
         {
             try
             {
-                var mensaje = JsonConvert.DeserializeObject<MensajeChat>(mensajeJson);
-
-                switch (mensaje.Tipo)
+                // Intentar deserializar como MensajeChat primero
+                try
                 {
-                    case "publico":
-                    case "grupo":
-                        chatBox.Items.Add($"{mensaje.Remitente}: {mensaje.Contenido}");
-                        break;
-                    case "privado":
-                        chatBox.Items.Add($"[Privado] {mensaje.Remitente}: {mensaje.Contenido}");
-                        break;
-                    case "usuario_conectado":
-                    case "usuario_desconectado":
-                        chatBox.Items.Add($"⚡ {mensaje.Contenido}");
-                        break;
-                    case "error":
-                        chatBox.Items.Add($"❌ {mensaje.Contenido}");
-                        break;
-                    case "login_confirmado":
-                        chatBox.Items.Add($"✓ {mensaje.Contenido}");
-                        break;
+                    var mensaje = JsonConvert.DeserializeObject<MensajeChat>(mensajeJson);
+
+                    switch (mensaje.Tipo)
+                    {
+                        case "publico":
+                        case "grupo":
+                            chatBox.Items.Add($"{mensaje.Remitente}: {mensaje.Contenido}");
+                            break;
+                        case "privado":
+                            chatBox.Items.Add($"[Privado] {mensaje.Remitente}: {mensaje.Contenido}");
+                            break;
+                        case "usuario_conectado":
+                        case "usuario_desconectado":
+                            chatBox.Items.Add($"⚡ {mensaje.Contenido}");
+                            // Actualizar lista de usuarios cuando alguien se conecta/desconecta
+                            CargarUsuariosDesdeBD();
+                            break;
+                        case "error":
+                            chatBox.Items.Add($"❌ {mensaje.Contenido}");
+                            break;
+                        case "login_confirmado":
+                            chatBox.Items.Add($"✓ {mensaje.Contenido}");
+                            break;
+                        default:
+                            ProcesarComoMensajeSistema(mensajeJson);
+                            break;
+                    }
+                }
+                catch
+                {
+                    // Si falla la deserialización como MensajeChat, intentar como MensajeSistema
+                    ProcesarComoMensajeSistema(mensajeJson);
                 }
 
                 // Scroll al final
@@ -409,6 +430,30 @@ namespace Chat_ProyectoIG
                 chatBox.Items.Add($"Error procesando mensaje: {ex.Message}");
             }
         }
+
+        private void ProcesarComoMensajeSistema(string mensajeJson)
+        {
+            try
+            {
+                var mensajeSistema = JsonConvert.DeserializeObject<MensajeSistema>(mensajeJson);
+
+                switch (mensajeSistema.Tipo)
+                {
+                    case "actualizar_usuarios":
+                        CargarUsuariosDesdeBD(); 
+                                                 
+                        break;
+                    case "actualizar_grupos":
+                        CargarGruposDesdeBD(); 
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error procesando mensaje del sistema: {ex.Message}");
+            }
+        }
+
 
         private async Task EnviarMensajeAlServidor(string tipo, string destinatario, string grupo, string contenido)
         {
@@ -462,7 +507,6 @@ namespace Chat_ProyectoIG
                     mensajeEnviado = mensajeEnviado.Replace(par.Key, par.Value);
                 }
                 await EnviarMensajeAnimado($"{UsuarioActual}: {mensajeEnviado}");
-                //GuardarMensajeEnBD(null, null, mensajeEnviado); // Mensaje general
                 await EnviarMensajeAlServidor("publico", null, null, mensajeEnviado);
                 inputBox.Clear();
             }
@@ -821,8 +865,6 @@ namespace Chat_ProyectoIG
 
         }
 
-     
-
         private Button crear_boton_imagen(string claveEmoji, string rutaImagen)
         {
             Button btn = new Button();
@@ -885,8 +927,8 @@ namespace Chat_ProyectoIG
                     inputBox.SelectionStart = index;
                     inputBox.SelectionLength = 0;
 
-                    // 🚨 CAMBIO CLAVE: Envuelve el atajo con marcadores de aislamiento
-                    string atajoMarcado = "\u0001" + atajo + "\u0002"; // Ejemplo: "\u0001:smile:\u0002"
+                    
+                    string atajoMarcado = "\u0001" + atajo + "\u0002"; 
 
                     // Aplicar formato para ocultar el texto
                     inputBox.SelectionFont = new Font(inputBox.Font.Name, 1f);
@@ -953,40 +995,6 @@ namespace Chat_ProyectoIG
 
         }
 
-        /*   private void ResaltarMenciones()
-           {
-               int cursorPos = inputBox.SelectionStart;
-               string texto = inputBox.Text;
-
-               // Guardar el texto plano sin formato
-               inputBox.TextChanged -= inputBox_TextChanged; // Evitar bucle de eventos
-               inputBox.Text = texto;
-               inputBox.SelectAll();
-               inputBox.SelectionColor = Color.White;
-               inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Regular);
-               inputBox.DeselectAll();
-
-               foreach (string usuario in memberList.Items)
-               {
-                   string patron = "@" + usuario;
-                   int index = texto.IndexOf(patron);
-
-                   while (index != -1)
-                   {
-                       inputBox.Select(index, patron.Length);
-                       inputBox.SelectionColor = Color.LightSkyBlue; // Azul celeste
-                       inputBox.SelectionFont = new Font("Segoe UI", 12, FontStyle.Italic);
-
-                       index = texto.IndexOf(patron, index + patron.Length);
-                   }
-               }
-
-               inputBox.SelectionStart = cursorPos;
-               inputBox.SelectionLength = 0;
-               inputBox.TextChanged += inputBox_TextChanged; // Restaurar evento
-           }*/
-
-
         private void ResaltarMenciones()
         {
             // CRÍTICO: No ejecutar mientras el emoji se está procesando.
@@ -1038,8 +1046,6 @@ namespace Chat_ProyectoIG
                     }
                 }
 
-                // 🚨 CAMBIO CLAVE: Reasegurar el formato de la posición actual del cursor 🚨
-                // Esto previene que las menciones afecten lo que se escribe después.
                 inputBox.SelectionStart = texto.Length;
                 inputBox.SelectionLength = 0;
                 inputBox.SelectionColor = inputBox.ForeColor;
@@ -1241,29 +1247,6 @@ namespace Chat_ProyectoIG
             }
         }
 
-
-        /*private async void MensajePrivado_Click(object sender, EventArgs e)
-        {
-            if (memberList.SelectedItem == null)
-            {
-                MessageBox.Show("Selecciona un usuario para enviarle un mensaje privado.", "Sin selección");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(inputBox.Text))
-            {
-                MessageBox.Show("Escribe un mensaje antes de enviarlo.", "Mensaje vacío");
-                return;
-            }
-
-            string destinatario = memberList.SelectedItem.ToString();
-            string mensaje = inputBox.Text;
-
-            await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensaje}");
-            GuardarMensajeEnBD(destinatario, null, mensaje); // CORRECCIÓN: 3 parámetros
-            inputBox.Clear();
-        }*/
-
         private async void MensajePrivado_Click(object sender, EventArgs e)
         {
             if (memberList.SelectedItem == null)
@@ -1296,7 +1279,6 @@ namespace Chat_ProyectoIG
 
             // Enviar y guardar
             await EnviarMensajeAnimado($"[Privado a {destinatario}] {UsuarioActual}: {mensajeEnviado}");
-            //GuardarMensajeEnBD(destinatario, null, mensajeEnviado);
             //Enviar al servidor
             await EnviarMensajeAlServidor("privado", destinatario, null, mensajeEnviado);
 
@@ -1343,28 +1325,6 @@ namespace Chat_ProyectoIG
             }
         }
 
-        /* private async void EnviarMensajeAGrupo_Click(object sender, EventArgs e)
-         {
-             if (groupList.SelectedItem == null)
-             {
-                 MessageBox.Show("Selecciona un grupo para enviar el mensaje.", "Grupo no seleccionado");
-                 return;
-             }
-
-             if (string.IsNullOrWhiteSpace(inputBox.Text))
-             {
-                 MessageBox.Show("Escribe un mensaje antes de enviarlo.", "Mensaje vacío");
-                 return;
-             }
-
-             string grupo = groupList.SelectedItem.ToString();
-             string mensaje = inputBox.Text;
-
-             await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensaje}");
-             GuardarMensajeEnBD(null, grupo, mensaje); // CORRECCIÓN: 3 parámetros
-             inputBox.Clear();
-         }*/
-
         private async void EnviarMensajeAGrupo_Click(object sender, EventArgs e)
         {
             if (groupList.SelectedItem == null)
@@ -1399,7 +1359,6 @@ namespace Chat_ProyectoIG
 
             // 3. Enviar y guardar
             await EnviarMensajeAnimado($"[Grupo: {grupo}] {UsuarioActual}: {mensajeEnviado}");
-            //GuardarMensajeEnBD(null, grupo, mensajeEnviado); // El mensaje general a grupo usa el grupo como segundo parámetro
             //Enviar al servidor
             await EnviarMensajeAlServidor("grupo", null, grupo, mensajeEnviado);
             inputBox.Clear();
@@ -1554,7 +1513,7 @@ namespace Chat_ProyectoIG
                     // Agregar al creador como miembro
                     MySqlCommand cmdCreador = new MySqlCommand(queryMiembro, conn);
                     cmdCreador.Parameters.AddWithValue("@grupoId", grupoId);
-                    cmdCreador.Parameters.AddWithValue("@usuario", UsuarioActual); 
+                    cmdCreador.Parameters.AddWithValue("@usuario", UsuarioActual);
                     cmdCreador.ExecuteNonQuery();
 
                     // Agregar demás miembros
@@ -1562,7 +1521,7 @@ namespace Chat_ProyectoIG
                     {
                         MySqlCommand cmdMiembro = new MySqlCommand(queryMiembro, conn);
                         cmdMiembro.Parameters.AddWithValue("@grupoId", grupoId);
-                        cmdMiembro.Parameters.AddWithValue("@usuario", miembro); 
+                        cmdMiembro.Parameters.AddWithValue("@usuario", miembro);
                         cmdMiembro.ExecuteNonQuery();
                     }
 
@@ -1743,54 +1702,5 @@ namespace Chat_ProyectoIG
                 MessageBox.Show($"Error al cargar miembros del grupo {nombreGrupo}: " + ex.Message);
             }
         }
-
-        private void GuardarMensajeEnBD(string destinatario, string grupo, string mensaje)
-        {
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    conn.Open();
-
-                    string query = "INSERT INTO mensajes (remitente, destinatario, grupo, mensaje) VALUES (@remitente, @destinatario, @grupo, @mensaje)";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@remitente", UsuarioActual);
-                    cmd.Parameters.AddWithValue("@destinatario", string.IsNullOrEmpty(destinatario) ? DBNull.Value : (object)destinatario);
-                    cmd.Parameters.AddWithValue("@grupo", string.IsNullOrEmpty(grupo) ? DBNull.Value : (object)grupo);
-                    cmd.Parameters.AddWithValue("@mensaje", mensaje);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al guardar mensaje: " + ex.Message);
-            }
-        }
-
-        /*private async Task conexionClienteServidor()
-        {
-            string serverIP = "127.0.0.1"; //se modificará al estar en la universidad, por el momneto se probará la conexión local para asegurar
-                                           // de que lo implementado funciona. 
-                                           // El IP se modificara con el de la uni y, cada integrante modificará esta línea manualmente
-                                           // con el fin de no generar inestabilidad en el programa.
-            int serverPort = 13000; 
-            //Debe contar con el mismo puerto de conexión que el servidor. 
-
-            try
-            {
-                this.tcpCliente = new TcpClient();
-                await this.tcpCliente.ConnectAsync(serverIP, serverPort); //no puede pasar a la siguiente linea hasta que se conecte asincronamente.
-
-                MessageBox.Show("Conexión exitosa!"); //oculpar - borrar linea una vez comprobemos que todo funciona adecuadamente
-
-                //crar un metodo que, reciba el .json o al cliente y actualizar los mensajes. 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"ERROR {ex} ");
-
-            }
-        }*/
-    }
+    }     
 }
