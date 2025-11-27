@@ -385,47 +385,39 @@ namespace Chat_ProyectoIG
         {
             try
             {
-                // Intentar deserializar como MensajeChat primero
-                try
-                {
-                    var mensaje = JsonConvert.DeserializeObject<MensajeChat>(mensajeJson);
+                var mensaje = JsonConvert.DeserializeObject<MensajeChat>(mensajeJson);
 
-                    switch (mensaje.Tipo)
-                    {
-                        case "publico":
-                        case "grupo":
-                            chatBox.Items.Add($"{mensaje.Remitente}: {mensaje.Contenido}");
-                            CargarGruposDesdeBD();
-                            break;
-                        case "privado":
-                            chatBox.Items.Add($"[Privado] {mensaje.Remitente}: {mensaje.Contenido}");
-                            break;
-                        case "usuario_conectado":
-                        case "usuario_desconectado":
-                            chatBox.Items.Add($"⚡ {mensaje.Contenido}");
-                            CargarUsuariosDesdeBD(); // Actualizar lista de usuarios
-                            break;
-                        case "error":
-                            chatBox.Items.Add($"❌ {mensaje.Contenido}");
-                            break;
-                        case "login_confirmado":
-                            chatBox.Items.Add($"✓ {mensaje.Contenido}");
-                            break;
-                        case "actualizar_grupos": 
-                            CargarGruposDesdeBD();
-                            break;
-                        default:
-                            ProcesarComoMensajeSistema(mensajeJson);
-                            break;
-                    }
-                }
-                catch
+                switch (mensaje.Tipo)
                 {
-                    // Si falla la deserialización como MensajeChat, intentar como MensajeSistema
-                    ProcesarComoMensajeSistema(mensajeJson);
+                    case "publico":
+                    case "grupo":
+                        chatBox.Items.Add($"{mensaje.Remitente}: {mensaje.Contenido}");
+                        break;
+                    case "privado":
+                        chatBox.Items.Add($"[Privado] {mensaje.Remitente}: {mensaje.Contenido}");
+                        break;
+                    case "usuario_conectado":
+                    case "usuario_desconectado":
+                        chatBox.Items.Add($"⚡ {mensaje.Contenido}");
+                        CargarUsuariosDesdeBD();
+                        break;
+                    case "actualizar_grupos": // ✅ SOLO para miembros del grupo
+                        Console.WriteLine("🔄 Recibida notificación para actualizar grupos...");
+                        CargarGruposDesdeBD();
+                        chatBox.Items.Add($"📢 {mensaje.Contenido}");
+                        break;
+                    case "grupo_creado": 
+                        chatBox.Items.Add(mensaje.Contenido);
+                        CargarGruposDesdeBD(); // El creador también actualiza su lista
+                        break;
+                    case "error":
+                        chatBox.Items.Add($"❌ {mensaje.Contenido}");
+                        break;
+                    case "login_confirmado":
+                        chatBox.Items.Add($"✓ {mensaje.Contenido}");
+                        break;
                 }
 
-                // Scroll al final
                 chatBox.TopIndex = chatBox.Items.Count - 1;
             }
             catch (Exception ex)

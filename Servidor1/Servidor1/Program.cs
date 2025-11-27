@@ -128,14 +128,48 @@ namespace Servidor1
                         Contenido = "Login exitoso",
                         Fecha = DateTime.Now
                     };
-
                     EnviarMensajeACliente(clienteRemitente, confirmacion);
-
-                    // Guardar en BD si es necesario
-                    GuardarMensajeEnBD(mensajeObj);
                     return;
                 }
 
+                // ✅ Manejar creación de grupos
+                if (mensajeObj.Tipo == "crear_grupo")
+                {
+                    // Formato: "nombre_grupo|miembro1,miembro2,miembro3"
+                    var partes = mensajeObj.Contenido.Split('|');
+                    if (partes.Length >= 2)
+                    {
+                        string nombreGrupo = partes[0];
+                        List<string> miembros = partes[1].Split(',').Where(m => !string.IsNullOrEmpty(m)).ToList();
+
+                        GuardarGrupoEnBD(nombreGrupo, mensajeObj.Remitente, miembros);
+
+                        // Confirmación al creador
+                        var confirmacion = new MensajeChat
+                        {
+                            Tipo = "grupo_creado",
+                            Remitente = "Servidor",
+                            Contenido = $"Grupo '{nombreGrupo}' creado exitosamente. Miembros notificados.",
+                            Fecha = DateTime.Now
+                        };
+                        EnviarMensajeACliente(clienteRemitente, confirmacion);
+                    }
+                    else
+                    {
+                        // Error de formato
+                        var error = new MensajeChat
+                        {
+                            Tipo = "error",
+                            Remitente = "Servidor",
+                            Contenido = "Formato incorrecto para crear grupo",
+                            Fecha = DateTime.Now
+                        };
+                        EnviarMensajeACliente(clienteRemitente, error);
+                    }
+                    return;
+                }
+
+                // Resto del código para otros tipos de mensaje...
                 // Guardar mensajes de chat en BD
                 if (mensajeObj.Tipo == "publico" || mensajeObj.Tipo == "privado" || mensajeObj.Tipo == "grupo")
                 {
@@ -166,7 +200,7 @@ namespace Servidor1
                 {
                     Tipo = "error",
                     Remitente = "Servidor",
-                    Contenido = "Error procesando mensaje",
+                    Contenido = $"Error: {ex.Message}",
                     Fecha = DateTime.Now
                 };
                 EnviarMensajeACliente(clienteRemitente, errorMsg);
@@ -286,6 +320,7 @@ namespace Servidor1
 
             Console.WriteLine($"Mensaje de grupo '{mensaje.Grupo}' de '{mensaje.Remitente}' reenviado.");
 
+            // ✅ NUEVO: Enviar notificación de actualización de grupos a todos los clientes
             var notificacionActualizacion = new MensajeChat
             {
                 Tipo = "actualizar_grupos",
@@ -369,30 +404,6 @@ namespace Servidor1
             return "No se pudo determinar la IP";
         }
 
-        static void NotificarActualizacionUsuarios()
-        {
-            var mensaje = new MensajeSistema
-            {
-                Tipo = "actualizar_usuarios",
-                Contenido = "", // Vacío para que no muestre notificación
-                Fecha = DateTime.Now
-            };
-
-            ReenviarMensajeSistemaATodos(mensaje);
-        }
-
-        static void NotificarActualizacionGrupos()
-        {
-            var mensaje = new MensajeSistema
-            {
-                Tipo = "actualizar_grupos",
-                Contenido = "", // Vacío para que no muestre notificación
-                Fecha = DateTime.Now
-            };
-
-            ReenviarMensajeSistemaATodos(mensaje);
-        }
-
         static void ReenviarMensajeSistemaATodos(MensajeSistema mensaje)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(mensaje));
@@ -417,6 +428,108 @@ namespace Servidor1
             }
 
             Console.WriteLine($"Notificación de sistema enviada a {clientesConectados.Count} clientes.");
+        }
+
+        static void GuardarGrupoEnBD(string nombreGrupo, string creador, List<string> miembros)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(Config.ConnectionString))
+                {
+                    conn.Open();
+
+                    // Insertar grupo
+                    string queryGrupo = @"INSERT INTO grupos (nombre_grupo, creador_id) 
+                                 VALUES (@nombre, (SELECT id_usuario FROM usuario WHERE usuario = @creador))";
+                    var cmdGrupo = new MySqlCommand(queryGrupo, conn);
+                    cmdGrupo.Parameters.AddWithValue("@nombre", nombreGrupo);
+                    cmdGrupo.Parameters.AddWithValue("@creador", creador);
+                    cmdGrupo.ExecuteNonQuery();
+
+                    // Obtener ID del grupo insertado
+                    long grupoId = cmdGrupo.LastInsertedId;
+
+                    // Insertar miembros (incluyendo al creador)
+                    string queryMiembro = @"INSERT INTO miembros_grupo (id_grupo, id_usuario) 
+                                   VALUES (@grupoId, (SELECT id_usuario FROM usuario WHERE usuario = @usuario))";
+
+                    // Agregar al creador (ya está incluido automáticamente)
+                    var cmdCreador = new MySqlCommand(queryMiembro, conn);
+                    cmdCreador.Parameters.AddWithValue("@grupoId", grupoId);
+                    cmdCreador.Parameters.AddWithValue("@usuario", creador);
+                    cmdCreador.ExecuteNonQuery();
+
+                    // Agregar demás miembros
+                    foreach (string miembro in miembros)
+                    {
+                        // Evitar duplicar al creador
+                        if (miembro != creador)
+                        {
+                            var cmdMiembro = new MySqlCommand(queryMiembro, conn);
+                            cmdMiembro.Parameters.AddWithValue("@grupoId", grupoId);
+                            cmdMiembro.Parameters.AddWithValue("@usuario", miembro);
+                            cmdMiembro.ExecuteNonQuery();
+                        }
+                    }
+
+                    // ✅ NOTIFICAR SOLO A LOS MIEMBROS DEL GRUPO
+                    NotificarNuevoGrupoAMiembros(nombreGrupo, creador, miembros);
+
+                    Console.WriteLine($"✅ Grupo '{nombreGrupo}' creado por '{creador}' con {miembros.Count} miembros adicionales.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error guardando grupo en BD: {ex.Message}");
+                throw; // Relanzar para manejar en el llamador
+            }
+        }
+
+        static void NotificarNuevoGrupoAMiembros(string nombreGrupo, string creador, List<string> miembros)
+        {
+            var notificacion = new MensajeChat
+            {
+                Tipo = "actualizar_grupos",
+                Remitente = "Servidor",
+                Contenido = $"Has sido agregado al grupo: {nombreGrupo}",
+                Fecha = DateTime.Now
+            };
+
+            // Lista de todos los miembros (incluyendo al creador)
+            var todosMiembros = new List<string>(miembros) { creador };
+
+            lock (lockObject)
+            {
+                foreach (var miembro in todosMiembros)
+                {
+                    if (usuariosConectados.ContainsKey(miembro))
+                    {
+                        var cliente = usuariosConectados[miembro];
+                        if (cliente.Connected)
+                        {
+                            try
+                            {
+                                EnviarMensajeACliente(cliente, notificacion);
+                                Console.WriteLine($"✅ Notificación enviada a: {miembro}");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"❌ Error notificando a {miembro}: {ex.Message}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"⚠️ {miembro} está en la lista pero desconectado");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"⚠️ {miembro} no está conectado actualmente");
+                    }
+                }
+            }
+
+            Console.WriteLine($"✅ Notificación de grupo '{nombreGrupo}' enviada a {todosMiembros.Count} miembros.");
         }
     }
 
